@@ -13,13 +13,16 @@ def test_creating_classic_project(page: Page):
 
 
 def test_creating_bdd_project(page: Page):
+    #arrange
     page.goto("https://app.testomat.io/users/sign_in")
     login(page, "tena.pavlenko@gmail.com", "pwd_plshldr")
 
+    #act
     open_company_projects(page, "Free Projects")
     project_name = "BDD Project1"
     create_project(page, "bdd", project_name)
 
+    #assert
     expect(page.locator(".sticky-header h2")).to_have_text(project_name)
     expect(page.locator("#welcometotestomatio")).to_have_text("Welcome to Testomat.io")
 
