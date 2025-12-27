@@ -1,11 +1,18 @@
 import os
 
+from dotenv import load_dotenv
 from playwright.sync_api import Page, expect
+
+load_dotenv()
+
+LOGIN_URL=f"{os.getenv("BASE_APP_URL")}/users/sign_in"
+EMAIL = os.getenv("EMAIL")
+PASSWORD = os.getenv("PASSWORD")
 
 
 def test_creating_classic_project(page: Page):
-    page.goto(f"{os.getenv("BASE_APP_URL")}/users/sign_in")
-    login(page, os.getenv("EMAIL"), os.getenv("PASSWORD"))
+    page.goto(LOGIN_URL)
+    login(page, EMAIL, PASSWORD)
 
     open_company_projects(page, "Free Projects")
     project_name = "Classic Project1"
@@ -16,16 +23,16 @@ def test_creating_classic_project(page: Page):
 
 
 def test_creating_bdd_project(page: Page):
-    #arrange
-    page.goto(f"{os.getenv("BASE_APP_URL")}/users/sign_in")
-    login(page, os.getenv("EMAIL"), os.getenv("PASSWORD"))
+    # arrange
+    page.goto(LOGIN_URL)
+    login(page, EMAIL, PASSWORD)
 
-    #act
+    # act
     open_company_projects(page, "Free Projects")
     project_name = "BDD Project1"
     create_project(page, "bdd", project_name)
 
-    #assert
+    # assert
     expect(page.locator(".sticky-header h2")).to_have_text(project_name)
     expect(page.locator("#welcometotestomatio")).to_have_text("Welcome to Testomat.io")
 
@@ -35,15 +42,15 @@ def test_login_valid_creds(page: Page):
     open_login_page(page)
 
     # act
-    login(page, os.getenv("EMAIL"), os.getenv("PASSWORD"))
+    login(page, EMAIL, PASSWORD)
 
     # assert
     expect(page.locator(".common-flash-success-right")).to_have_text('Signed in successfully')
 
 
 def test_opening_project_python_manufacture(page: Page):
-    page.goto(f"{os.getenv("BASE_APP_URL")}/users/sign_in")
-    login(page, os.getenv("EMAIL"), os.getenv("PASSWORD"))
+    page.goto(LOGIN_URL)
+    login(page, EMAIL, PASSWORD)
 
     target_project: str = "python manufacture"
     search_project(page, target_project)
@@ -55,7 +62,7 @@ def test_opening_project_python_manufacture(page: Page):
 def test_opening_company_free_projects(page: Page):
     # arrange
     page.goto(f"{os.getenv("BASE_APP_URL")}")
-    login(page, os.getenv("EMAIL"), os.getenv("PASSWORD"))
+    login(page, EMAIL, PASSWORD)
 
     # act
     companies_list = page.locator("select#company_id")
