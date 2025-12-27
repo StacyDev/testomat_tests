@@ -1,8 +1,11 @@
+import os
+
 from playwright.sync_api import Page, expect
 
+
 def test_creating_classic_project(page: Page):
-    page.goto("https://app.testomat.io/users/sign_in")
-    login(page, "tena.pavlenko@gmail.com", "pwd_plshldr")
+    page.goto(f"{os.getenv("BASE_APP_URL")}/users/sign_in")
+    login(page, os.getenv("EMAIL"), os.getenv("PASSWORD"))
 
     open_company_projects(page, "Free Projects")
     project_name = "Classic Project1"
@@ -14,8 +17,8 @@ def test_creating_classic_project(page: Page):
 
 def test_creating_bdd_project(page: Page):
     #arrange
-    page.goto("https://app.testomat.io/users/sign_in")
-    login(page, "tena.pavlenko@gmail.com", "pwd_plshldr")
+    page.goto(f"{os.getenv("BASE_APP_URL")}/users/sign_in")
+    login(page, os.getenv("EMAIL"), os.getenv("PASSWORD"))
 
     #act
     open_company_projects(page, "Free Projects")
@@ -32,15 +35,15 @@ def test_login_valid_creds(page: Page):
     open_login_page(page)
 
     # act
-    login(page, "tena.pavlenko@gmail.com", "pwd_plshldr")
+    login(page, os.getenv("EMAIL"), os.getenv("PASSWORD"))
 
     # assert
     expect(page.locator(".common-flash-success-right")).to_have_text('Signed in successfully')
 
 
 def test_opening_project_python_manufacture(page: Page):
-    page.goto("https://app.testomat.io/users/sign_in")
-    login(page, "tena.pavlenko@gmail.com", "pwd_plshldr")
+    page.goto(f"{os.getenv("BASE_APP_URL")}/users/sign_in")
+    login(page, os.getenv("EMAIL"), os.getenv("PASSWORD"))
 
     target_project: str = "python manufacture"
     search_project(page, target_project)
@@ -51,8 +54,8 @@ def test_opening_project_python_manufacture(page: Page):
 
 def test_opening_company_free_projects(page: Page):
     # arrange
-    page.goto("https://app.testomat.io/")
-    login(page, "tena.pavlenko@gmail.com", "pwd_plshldr")
+    page.goto(f"{os.getenv("BASE_APP_URL")}")
+    login(page, os.getenv("EMAIL"), os.getenv("PASSWORD"))
 
     # act
     companies_list = page.locator("select#company_id")
@@ -100,7 +103,7 @@ def login(page: Page, email: str, password: str):
 
 
 def open_login_page(page: Page):
-    page.goto("https://testomat.io/")
+    page.goto(os.getenv("BASE_URL"))
     page.click(".login-item[href*='sign_in']")
 
 
