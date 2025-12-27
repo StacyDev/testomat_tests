@@ -1,18 +1,11 @@
 import os
 
-from dotenv import load_dotenv
 from playwright.sync_api import Page, expect
 
-load_dotenv()
 
-LOGIN_URL=f"{os.getenv("BASE_APP_URL")}/users/sign_in"
-EMAIL = os.getenv("EMAIL")
-PASSWORD = os.getenv("PASSWORD")
-
-
-def test_creating_classic_project(page: Page):
-    page.goto(LOGIN_URL)
-    login(page, EMAIL, PASSWORD)
+def test_creating_classic_project(page: Page, configs: dict):
+    page.goto(configs["login_url"])
+    login(page, configs["email"], configs["password"])
 
     open_company_projects(page, "Free Projects")
     project_name = "Classic Project1"
@@ -22,10 +15,10 @@ def test_creating_classic_project(page: Page):
     expect(page.locator("#welcometotestomatio")).to_have_text("Welcome to Testomat.io")
 
 
-def test_creating_bdd_project(page: Page):
+def test_creating_bdd_project(page: Page, configs: dict):
     # arrange
-    page.goto(LOGIN_URL)
-    login(page, EMAIL, PASSWORD)
+    page.goto(configs["login_url"])
+    login(page, configs["email"], configs["password"])
 
     # act
     open_company_projects(page, "Free Projects")
@@ -37,20 +30,20 @@ def test_creating_bdd_project(page: Page):
     expect(page.locator("#welcometotestomatio")).to_have_text("Welcome to Testomat.io")
 
 
-def test_login_valid_creds(page: Page):
+def test_login_valid_creds(page: Page, configs: dict):
     # arrange
-    open_login_page(page)
+    open_login_page(page, configs)
 
     # act
-    login(page, EMAIL, PASSWORD)
+    login(page, configs["email"], configs["password"])
 
     # assert
     expect(page.locator(".common-flash-success-right")).to_have_text('Signed in successfully')
 
 
-def test_opening_project_python_manufacture(page: Page):
-    page.goto(LOGIN_URL)
-    login(page, EMAIL, PASSWORD)
+def test_opening_project_python_manufacture(page: Page, configs: dict):
+    page.goto(configs["login_url"])
+    login(page, configs["email"], configs["password"])
 
     target_project: str = "python manufacture"
     search_project(page, target_project)
@@ -59,10 +52,10 @@ def test_opening_project_python_manufacture(page: Page):
     expect(page.locator(".breadcrumbs-page-second-level", has_text="Tests")).to_be_visible()
 
 
-def test_opening_company_free_projects(page: Page):
+def test_opening_company_free_projects(page: Page, configs: dict):
     # arrange
     page.goto(f"{os.getenv("BASE_APP_URL")}")
-    login(page, EMAIL, PASSWORD)
+    login(page, configs["email"], configs["password"])
 
     # act
     companies_list = page.locator("select#company_id")
@@ -77,7 +70,7 @@ def test_opening_company_free_projects(page: Page):
     project_locator = page.locator("ul li h3", has_text=target_project)
     expect(project_locator).to_be_hidden()
 
-    expect(page.get_by_text("You have not created any projects yet")).to_be_visible()
+    expect(page.get_by_text("Enterprise trial plan", exact=False)).to_be_visible()
 
 
 def create_project(page: Page, project_type: str, project_name: str):
@@ -109,8 +102,8 @@ def login(page: Page, email: str, password: str):
     page.click("#content-desktop input[type='submit']")
 
 
-def open_login_page(page: Page):
-    page.goto(os.getenv("BASE_URL"))
+def open_login_page(page: Page, configs: dict):
+    page.goto(configs["base_url"])
     page.click(".login-item[href*='sign_in']")
 
 
