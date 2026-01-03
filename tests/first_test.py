@@ -1,11 +1,13 @@
 import os
 
+from faker import Faker
 from playwright.sync_api import Page, expect
 
 
-def test_creating_classic_project(page: Page, configs: dict):
-    page.goto(configs["login_url"])
-    login(page, configs["email"], configs["password"])
+
+def test_creating_classic_project(page: Page, configs):
+    page.goto(configs.base_app_url)
+    login(page, configs.email, configs.password)
 
     open_company_projects(page, "Free Projects")
     project_name = "Classic Project1"
@@ -15,10 +17,10 @@ def test_creating_classic_project(page: Page, configs: dict):
     expect(page.locator("#welcometotestomatio")).to_have_text("Welcome to Testomat.io")
 
 
-def test_creating_bdd_project(page: Page, configs: dict):
+def test_creating_bdd_project(page: Page, configs):
     # arrange
-    page.goto(configs["login_url"])
-    login(page, configs["email"], configs["password"])
+    page.goto(configs.base_app_url)
+    login(page, configs.email, configs.password)
 
     # act
     open_company_projects(page, "Free Projects")
@@ -30,20 +32,31 @@ def test_creating_bdd_project(page: Page, configs: dict):
     expect(page.locator("#welcometotestomatio")).to_have_text("Welcome to Testomat.io")
 
 
-def test_login_valid_creds(page: Page, configs: dict):
+def test_login_valid_creds(page: Page, configs):
     # arrange
     open_login_page(page, configs)
 
     # act
-    login(page, configs["email"], configs["password"])
+    login(page, configs.email, configs.password)
 
     # assert
     expect(page.locator(".common-flash-success-right")).to_have_text('Signed in successfully')
 
+def test_login_invalid_creds(page: Page, configs):
+    # arrange
+    open_login_page(page, configs)
 
-def test_opening_project_python_manufacture(page: Page, configs: dict):
-    page.goto(configs["login_url"])
-    login(page, configs["email"], configs["password"])
+    # act
+    invalid_password=Faker().password(length=10)
+    print(invalid_password)
+    login(page, configs.email, invalid_password)
+
+    # assert
+    expect(page.locator("#content-desktop").get_by_text('Invalid Email or password.', exact=False)).to_be_visible()
+
+def test_opening_project_python_manufacture(page: Page, configs):
+    page.goto(configs.base_app_url)
+    login(page, configs.email, configs.password)
 
     target_project: str = "python manufacture"
     search_project(page, target_project)
@@ -52,10 +65,10 @@ def test_opening_project_python_manufacture(page: Page, configs: dict):
     expect(page.locator(".breadcrumbs-page-second-level", has_text="Tests")).to_be_visible()
 
 
-def test_opening_company_free_projects(page: Page, configs: dict):
+def test_opening_company_free_projects(page: Page, configs):
     # arrange
     page.goto(f"{os.getenv("BASE_APP_URL")}")
-    login(page, configs["email"], configs["password"])
+    login(page, configs.email, configs.password)
 
     # act
     companies_list = page.locator("select#company_id")
@@ -103,7 +116,7 @@ def login(page: Page, email: str, password: str):
 
 
 def open_login_page(page: Page, configs: dict):
-    page.goto(configs["base_url"])
+    page.goto(configs.base_url)
     page.click(".login-item[href*='sign_in']")
 
 
