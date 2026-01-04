@@ -1,18 +1,18 @@
-import os
-
 import pytest
 from faker import Faker
 from playwright.sync_api import Page, expect
+
 
 @pytest.fixture(scope="function")
 def login(page: Page, configs):
     page.goto(configs.base_app_url)
     login_user(page, configs.email, configs.password)
 
+
 TARGET_PROJECT = "python manufacture"
 
-def test_creating_classic_project(page: Page, login):
 
+def test_creating_classic_project(page: Page, login):
     open_company_projects(page, "Free Projects")
     project_name = "Classic Project1"
     create_project(page, "classic", project_name)
@@ -22,7 +22,6 @@ def test_creating_classic_project(page: Page, login):
 
 
 def test_creating_bdd_project(page: Page, login):
-
     # act
     open_company_projects(page, "Free Projects")
     project_name = "BDD Project1"
@@ -43,20 +42,21 @@ def test_login_valid_creds(page: Page, configs):
     # assert
     expect(page.locator(".common-flash-success-right")).to_have_text('Signed in successfully')
 
+
 def test_login_invalid_creds(page: Page, configs):
     # arrange
     open_login_page(page, configs)
 
     # act
-    invalid_password=Faker().password(length=10)
+    invalid_password = Faker().password(length=10)
     print(invalid_password)
     login_user(page, configs.email, invalid_password)
 
     # assert
     expect(page.locator("#content-desktop").get_by_text('Invalid Email or password.', exact=False)).to_be_visible()
 
-def test_opening_project_python_manufacture(page: Page, login):
 
+def test_opening_project_python_manufacture(page: Page, login):
     search_project(page, TARGET_PROJECT)
     open_project(page, TARGET_PROJECT)
 
@@ -64,7 +64,6 @@ def test_opening_project_python_manufacture(page: Page, login):
 
 
 def test_opening_company_free_projects(page: Page, login):
-
     # act
     companies_list = page.locator("select#company_id")
     expect(companies_list).to_be_visible()

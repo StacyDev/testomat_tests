@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 @dataclass(frozen=True)
 class Config:
     base_url: str
@@ -13,11 +14,12 @@ class Config:
     email: str
     password: str
 
+
 @pytest.fixture(scope="session")
 def configs():
     return Config(
         base_app_url=f"{os.getenv("BASE_APP_URL")}/users/sign_in",
-        email = os.getenv("EMAIL"),
+        email=os.getenv("EMAIL"),
         password=os.getenv("PASSWORD"),
-        base_url= os.getenv("BASE_URL")
+        base_url=os.getenv("BASE_URL")
     )
