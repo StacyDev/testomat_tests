@@ -1,9 +1,18 @@
+import pytest
+from faker import Faker
 from playwright.sync_api import Page, expect
 
-def test_creating_classic_project(page: Page):
-    page.goto("https://app.testomat.io/users/sign_in")
-    login(page, "tena.pavlenko@gmail.com", "pwd_plshldr")
 
+@pytest.fixture(scope="function")
+def login(page: Page, configs):
+    page.goto(configs.base_app_url)
+    login_user(page, configs.email, configs.password)
+
+
+TARGET_PROJECT = "python manufacture"
+
+
+def test_creating_classic_project(page: Page, login):
     open_company_projects(page, "Free Projects")
     project_name = "Classic Project1"
     create_project(page, "classic", project_name)
@@ -12,48 +21,49 @@ def test_creating_classic_project(page: Page):
     expect(page.locator("#welcometotestomatio")).to_have_text("Welcome to Testomat.io")
 
 
-def test_creating_bdd_project(page: Page):
-    #arrange
-    page.goto("https://app.testomat.io/users/sign_in")
-    login(page, "tena.pavlenko@gmail.com", "pwd_plshldr")
-
-    #act
+def test_creating_bdd_project(page: Page, login):
+    # act
     open_company_projects(page, "Free Projects")
     project_name = "BDD Project1"
     create_project(page, "bdd", project_name)
 
-    #assert
+    # assert
     expect(page.locator(".sticky-header h2")).to_have_text(project_name)
     expect(page.locator("#welcometotestomatio")).to_have_text("Welcome to Testomat.io")
 
 
-def test_login_valid_creds(page: Page):
+def test_login_valid_creds(page: Page, configs):
     # arrange
-    open_login_page(page)
+    open_login_page(page, configs)
 
     # act
-    login(page, "tena.pavlenko@gmail.com", "pwd_plshldr")
+    login_user(page, configs.email, configs.password)
 
     # assert
     expect(page.locator(".common-flash-success-right")).to_have_text('Signed in successfully')
 
 
-def test_opening_project_python_manufacture(page: Page):
-    page.goto("https://app.testomat.io/users/sign_in")
-    login(page, "tena.pavlenko@gmail.com", "pwd_plshldr")
+def test_login_invalid_creds(page: Page, configs):
+    # arrange
+    open_login_page(page, configs)
 
-    target_project: str = "python manufacture"
-    search_project(page, target_project)
-    open_project(page, target_project)
+    # act
+    invalid_password = Faker().password(length=10)
+    print(invalid_password)
+    login_user(page, configs.email, invalid_password)
+
+    # assert
+    expect(page.locator("#content-desktop").get_by_text('Invalid Email or password.', exact=False)).to_be_visible()
+
+
+def test_opening_project_python_manufacture(page: Page, login):
+    search_project(page, TARGET_PROJECT)
+    open_project(page, TARGET_PROJECT)
 
     expect(page.locator(".breadcrumbs-page-second-level", has_text="Tests")).to_be_visible()
 
 
-def test_opening_company_free_projects(page: Page):
-    # arrange
-    page.goto("https://app.testomat.io/")
-    login(page, "tena.pavlenko@gmail.com", "pwd_plshldr")
-
+def test_opening_company_free_projects(page: Page, login):
     # act
     companies_list = page.locator("select#company_id")
     expect(companies_list).to_be_visible()
@@ -61,13 +71,12 @@ def test_opening_company_free_projects(page: Page):
     companies_list.select_option("Free Projects")
 
     # assert
-    target_project: str = "python manufacture"
-    search_project(page, target_project)
+    search_project(page, TARGET_PROJECT)
 
-    project_locator = page.locator("ul li h3", has_text=target_project)
+    project_locator = page.locator("ul li h3", has_text=TARGET_PROJECT)
     expect(project_locator).to_be_hidden()
 
-    expect(page.get_by_text("You have not created any projects yet")).to_be_visible()
+    expect(page.get_by_text("Enterprise trial plan", exact=False)).to_be_visible()
 
 
 def create_project(page: Page, project_type: str, project_name: str):
@@ -80,27 +89,27 @@ def create_project(page: Page, project_type: str, project_name: str):
     page.click("[value='Create']")
 
 
-def open_project(page: Page, target_proj_name: str):
-    project_locator = page.locator("ul li h3", has_text=target_proj_name)
+def open_project(page: Page, project_name: str):
+    project_locator = page.locator("ul li h3", has_text=project_name)
     expect(project_locator).to_be_visible()
     project_locator.click()
 
 
-def search_project(page: Page, target_project: str):
+def search_project(page: Page, project_name: str):
     search_locator = page.locator("#content-desktop input#search")
     expect(search_locator).to_be_visible()
-    search_locator.type(target_project)
+    search_locator.type(project_name)
 
 
-def login(page: Page, email: str, password: str):
+def login_user(page: Page, email: str, password: str):
     page.get_by_role("textbox",
                      name="name@email.com").type(email)
     page.locator("#content-desktop input#user_password").type(password)
     page.click("#content-desktop input[type='submit']")
 
 
-def open_login_page(page: Page):
-    page.goto("https://testomat.io/")
+def open_login_page(page: Page, configs):
+    page.goto(configs.base_url)
     page.click(".login-item[href*='sign_in']")
 
 
