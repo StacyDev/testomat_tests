@@ -16,9 +16,15 @@ class SingleProjectPage:
         self.loc_delete_proj_btn = self.page.locator(".red-btn")
         self.loc_expand_menu_btn = self.page.locator("button.btn-open")
         self.loc_logo_img = self.page.locator(".logo-full")
+        self.loc_new_test_suite_inp = self.page.locator("input[placeholder='First Suite']")
+        self.loc_new_test_suite_btn = self.page.get_by_role("button", name="Suite")
+
+
 
     def is_loaded(self):
+        self.page.pause()
         expect(self.loc_proj_title_lbl).to_be_visible()
+        expect(self.loc_new_test_suite_inp).to_be_visible()
 
     def open_project_settings(self):
         self.page.once("dialog", handle_dialog)
@@ -31,7 +37,7 @@ class SingleProjectPage:
         self.loc_delete_proj_btn.click()
 
     def expand_project_side_menu(self):
-        expect( self.loc_expand_menu_btn).to_be_visible()
+        expect(self.loc_expand_menu_btn).to_be_visible()
         self.loc_expand_menu_btn.click()
 
     def click_testomat_logo(self):
