@@ -55,7 +55,8 @@ def test_login_invalid_creds(page: Page, configs):
     login_user(page, configs.email, invalid_password)
 
     # assert
-    expect(page.locator("#content-desktop").get_by_text('Invalid Email or password.', exact=False)).to_be_visible()
+    expect(page.locator("#content-desktop").get_by_text('Invalid Email or password.',
+                                                        exact=False)).to_be_visible()
 
 
 def test_opening_project_python_manufacture(page: Page, login):
@@ -134,7 +135,7 @@ def open_company_projects(page: Page, target_company: str):
 def cleanup_projects(page: Page, project_name: str):
     project_items: list[Locator] = page.locator("ul li h3", has_text=project_name).all()
 
-    while len(project_items)>0:
+    while len(project_items) > 0:
         item = page.locator("ul li h3", has_text=project_name).first
         item.click()
         expect(page.locator(".sticky-header h2", has_text=project_name)).to_be_visible()

@@ -1,82 +1,100 @@
-from playwright.sync_api import Page, expect
+from playwright.sync_api import expect
 
-from src.web.pages.CreateProjectPage import CreateProjectPage
-from src.web.pages.ProjectsPage import ProjectsPage
-from src.web.pages.SingleProjectPage import SingleProjectPage
+from src.web.Application import Application
 from tests.conftest import DEFAULT_PROJ_CLASSIC, DEFAULT_COMPANY, DEFAULT_PROJ_BDD
 
 
-def test_creating_classic_project(page: Page, remove_test_projects):
-    projects_page = ProjectsPage(page)
-    projects_page.is_loaded()
-    projects_page.open_company_projects(DEFAULT_COMPANY)
-    expect(projects_page.loc_proj_lst).to_have_count(0)
+def test_creating_classic_project(app: Application, remove_test_projects):
+    # arrange
+    (app.projects_page
+     .is_loaded()
+     .open_company_projects(DEFAULT_COMPANY)
+     .is_project_list_loaded())
+
+    projects_num_before = len(app.projects_page.get_all_projects_list())
+
+    app.projects_page.click_create_project()
+
+    # act
     project_name = DEFAULT_PROJ_CLASSIC
-    projects_page.click_create_project()
 
-    create_project_page = CreateProjectPage(page)
-    create_project_page.is_loaded()
-    create_project_page.create_project("classic", project_name)
+    (app.create_project_page
+     .is_loaded()
+     .create_project("classic", project_name))
 
-    expect(page.locator(".sticky-header h2", has_text=project_name)).to_be_visible()
-    single_project_page = SingleProjectPage(page, project_name)
-    single_project_page.is_loaded()
-    single_project_page.return_to_projects_list()
-    projects_page.is_loaded()
-    expect(projects_page.loc_proj_lst).to_have_count(1)
+    # assert
+    (app.single_project_page
+     .is_loaded()
+     .return_to_projects_list())
+
+    projects_lst_after = (app.projects_page
+                          .is_loaded()
+                          .is_project_list_loaded()
+                          .get_project_list_locator())
+
+    expect(projects_lst_after).to_have_count(projects_num_before + 1)
 
 
-def test_creating_bdd_project(page: Page, remove_test_projects):
-    projects_page = ProjectsPage(page)
-    projects_page.is_loaded()
-    projects_page.open_company_projects(DEFAULT_COMPANY)
+def test_creating_bdd_project(app: Application, remove_test_projects):
+    (app.projects_page
+     .is_loaded()
+     .open_company_projects(DEFAULT_COMPANY)
+     .is_project_list_loaded())
 
-    print(f"Number of projects {len(projects_page.get_all_projects_list())}")
-    expect(projects_page.loc_proj_lst).to_have_count(0)
+    projects_num_before = len(app.projects_page.get_all_projects_list())
+
     project_name = DEFAULT_PROJ_BDD
-    projects_page.click_create_project()
+    app.projects_page.click_create_project()
 
-    create_project_page = CreateProjectPage(page)
-    create_project_page.is_loaded()
-    create_project_page.create_project("bdd", project_name)
+    (app.create_project_page
+     .is_loaded()
+     .create_project("bdd", project_name))
 
-    expect(page.locator(".sticky-header h2", has_text=project_name)).to_be_visible()
-    single_project_page = SingleProjectPage(page, project_name)
-    single_project_page.is_loaded()
-    single_project_page.return_to_projects_list()
-    projects_page.is_loaded()
-    expect(projects_page.loc_proj_lst).to_have_count(1)
+    app.single_project_page.is_loaded()
+    expect(app.single_project_page.get_project_title_locator()).to_have_text(project_name)
+    app.single_project_page.return_to_projects_list()
 
-
-def test_deleting_project(page: Page, create_test_project):
-    projects_page = ProjectsPage(page)
-    projects_page.is_loaded()
-    projects_page.open_company_projects(DEFAULT_COMPANY)
-    projects_page.enter_project(DEFAULT_PROJ_CLASSIC)
-    single_project_page = SingleProjectPage(page, DEFAULT_PROJ_CLASSIC)
-    single_project_page.is_loaded()
-    single_project_page.open_project_settings()
-    single_project_page.trigger_and_confirm_project_delete()
-    single_project_page.return_to_projects_list()
-
-    expect(projects_page.loc_proj_lst).to_have_count(0)
+    project_num_after = (app.projects_page
+                         .is_loaded()
+                         .get_project_list_locator())
+    expect(project_num_after).to_have_count(projects_num_before + 1)
 
 
-def test_project_search(page: Page, create_multiple_projects):
-    projects_page = ProjectsPage(page)
-    projects_page.is_loaded()
-    projects_page.is_project_list_loaded()
-    projects_page.search_project(DEFAULT_PROJ_CLASSIC)
+def test_deleting_project(app: Application, create_test_project):
+    (app.projects_page
+     .is_loaded()
+     .open_company_projects(DEFAULT_COMPANY))
 
-    expect(projects_page.loc_proj_lst.filter(visible=True)).to_have_count(1)
-    expect(projects_page.loc_proj_lst.filter(visible=True)).to_have_text(DEFAULT_PROJ_CLASSIC)
+    projects_num_before = len(app.projects_page.get_all_projects_list())
+
+    app.projects_page.enter_project(DEFAULT_PROJ_CLASSIC)
+
+    (app.single_project_page
+     .is_loaded()
+     .open_project_settings()
+     .trigger_and_confirm_project_delete()
+     .return_to_projects_list())
+
+    expect(app.projects_page.get_project_list_locator()).to_have_count(projects_num_before - 1)
 
 
-def test_project_search_part_name(page: Page, create_multiple_projects):
-    projects_page = ProjectsPage(page)
-    projects_page.is_loaded()
-    projects_page.is_project_list_loaded()
-    projects_page.search_project(str.capitalize("BD"))
+def test_project_search(app: Application, create_multiple_projects):
+    (app.projects_page
+     .is_loaded()
+     .is_project_list_loaded()
+     .search_project(DEFAULT_PROJ_CLASSIC))
 
-    expect(projects_page.loc_proj_lst.filter(visible=True)).to_have_count(1)
-    expect(projects_page.loc_proj_lst.filter(visible=True)).to_have_text(DEFAULT_PROJ_BDD)
+    expect(app.projects_page.get_project_list_locator().filter(visible=True)).to_have_count(1)
+    expect(app.projects_page.get_project_list_locator().filter(visible=True)).to_have_text(
+        DEFAULT_PROJ_CLASSIC)
+
+
+def test_project_search_part_name(app: Application, create_multiple_projects):
+    (app.projects_page
+     .is_loaded()
+     .is_project_list_loaded()
+     .search_project(str.capitalize("BD")))
+
+    expect(app.projects_page.get_project_list_locator().filter(visible=True)).to_have_count(1)
+    expect(app.projects_page.get_project_list_locator().filter(visible=True)).to_have_text(
+        DEFAULT_PROJ_BDD)
