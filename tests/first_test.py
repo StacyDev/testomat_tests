@@ -1,6 +1,8 @@
+from xml.sax.xmlreader import Locator
+
 import pytest
 from faker import Faker
-from playwright.sync_api import Page, expect
+from playwright.sync_api import Page, expect, Dialog
 
 
 @pytest.fixture(scope="function")
@@ -53,7 +55,8 @@ def test_login_invalid_creds(page: Page, configs):
     login_user(page, configs.email, invalid_password)
 
     # assert
-    expect(page.locator("#content-desktop").get_by_text('Invalid Email or password.', exact=False)).to_be_visible()
+    expect(page.locator("#content-desktop").get_by_text('Invalid Email or password.',
+                                                        exact=False)).to_be_visible()
 
 
 def test_opening_project_python_manufacture(page: Page, login):
@@ -61,6 +64,12 @@ def test_opening_project_python_manufacture(page: Page, login):
     open_project(page, TARGET_PROJECT)
 
     expect(page.locator(".breadcrumbs-page-second-level", has_text="Tests")).to_be_visible()
+
+
+def test_cleanup_projects(page: Page, login):
+    open_company_projects(page, "Free Projects")
+    cleanup_projects(page, "Classic Project1")
+    cleanup_projects(page, "BDD Project1")
 
 
 def test_opening_company_free_projects(page: Page, login):
@@ -114,7 +123,34 @@ def open_login_page(page: Page, configs):
 
 
 def open_company_projects(page: Page, target_company: str):
-    companies_list = page.locator("select#company_id")
+    companies_list = page.locator("#content-desktop select#company_id")
     expect(companies_list).to_be_visible()
     companies_list.click()
+
+    # expect(companies_list.get_by_text(target_company)).to_be_visible()
     companies_list.select_option(target_company)
+    page.wait_for_timeout(1000)
+
+
+def cleanup_projects(page: Page, project_name: str):
+    project_items: list[Locator] = page.locator("ul li h3", has_text=project_name).all()
+
+    while len(project_items) > 0:
+        item = page.locator("ul li h3", has_text=project_name).first
+        item.click()
+        expect(page.locator(".sticky-header h2", has_text=project_name)).to_be_visible()
+        page.locator(".md-icon-cog").click()
+        page.on("dialog", handle_dialog)
+        page.locator(".red-btn").click()
+        page.locator(".red-btn").click()
+        expect(page.locator("button.btn-open")).to_be_visible()
+        page.locator("button.btn-open").click()
+        expect(page.locator(".logo-full")).to_be_visible()
+        page.locator(".logo-full").click()
+        expect(page.locator("#content-desktop select#company_id")).to_be_visible()
+        project_items = page.locator("ul li h3", has_text=project_name).all()
+
+
+def handle_dialog(dialog: Dialog):
+    print(f"Dialog message: {dialog.message}")
+    dialog.accept()
