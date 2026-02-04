@@ -1,9 +1,11 @@
+import pytest
 from playwright.sync_api import expect
 
 from src.web.Application import Application
 from tests.conftest import DEFAULT_PROJ_CLASSIC, DEFAULT_COMPANY, DEFAULT_PROJ_BDD
 
 
+@pytest.mark.regression
 def test_creating_classic_project(app: Application, remove_test_projects):
     # arrange
     (app.projects_page
@@ -35,6 +37,7 @@ def test_creating_classic_project(app: Application, remove_test_projects):
     expect(projects_lst_after).to_have_count(projects_num_before + 1)
 
 
+@pytest.mark.regression
 def test_creating_bdd_project(app: Application, remove_test_projects):
     (app.projects_page
      .is_loaded()
@@ -60,6 +63,7 @@ def test_creating_bdd_project(app: Application, remove_test_projects):
     expect(project_num_after).to_have_count(projects_num_before + 1)
 
 
+@pytest.mark.regression
 def test_deleting_project(app: Application, create_test_project):
     (app.projects_page
      .is_loaded()
@@ -78,6 +82,7 @@ def test_deleting_project(app: Application, create_test_project):
     expect(app.projects_page.get_project_list_locator()).to_have_count(projects_num_before - 1)
 
 
+@pytest.mark.regression
 def test_project_search(app: Application, create_multiple_projects):
     (app.projects_page
      .is_loaded()
@@ -89,6 +94,8 @@ def test_project_search(app: Application, create_multiple_projects):
         DEFAULT_PROJ_CLASSIC)
 
 
+@pytest.mark.regression
+@pytest.mark.smoke
 def test_project_search_part_name(app: Application, create_multiple_projects):
     (app.projects_page
      .is_loaded()

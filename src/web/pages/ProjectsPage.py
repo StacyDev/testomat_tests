@@ -11,7 +11,7 @@ class ProjectsPage:
         self._loc_proj_lst = self.page.locator("ul li h3")
         self._loc_comp_select = self.page.locator("#content-desktop select#company_id")
         self._loc_no_proj_lbl = self.page.get_by_text("You have not created any projects yet")
-        self._loc_proj_lst_grid = self.page.locator("#grid")
+        self._loc_proj_lst_grid = self.page.locator(".tab-content#grid")
         self._loc_login_ok_msg = self.page.locator(".common-flash-success-right",
                                                    has_text="Signed in successfully")
         self._loc_create_proj_btn = self.page.locator(".common-btn-primary", has_not_text="project")
@@ -65,7 +65,7 @@ class ProjectsPage:
     def has_projects(self) -> bool:
         try:
             locator = self._loc_no_proj_lbl
-            locator.wait_for(state="visible", timeout=1000)
+            locator.wait_for(state="visible", timeout=2000)
             return False
 
         except TimeoutError:

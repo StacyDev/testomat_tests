@@ -1,9 +1,11 @@
+import pytest
 from faker import Faker
 
 from src.web.Application import Application
 from tests.conftest import Config
 
 
+@pytest.mark.regression
 def test_login_invalid(app: Application, configs: Config):
     (app.home_page
      .open()
@@ -18,6 +20,8 @@ def test_login_invalid(app: Application, configs: Config):
     app.login_page.is_invalid_message_visible()
 
 
+@pytest.mark.regression
+@pytest.mark.smoke
 def test_login_success(app: Application, configs: Config):
     (app.home_page
      .open()

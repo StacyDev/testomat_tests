@@ -79,6 +79,31 @@ def create_multiple_projects(app: Application, configs, remove_test_projects):
     do_create_project_steps(app, "bdd", DEFAULT_PROJ_BDD)
 
 
+@pytest.fixture(scope="session")
+def browser_type_launch_args(browser_type_launch_args: dict) -> dict:
+    return {
+        **browser_type_launch_args,
+        "channel": "chrome",
+        "headless": False,
+        "slow_mo": 150,  # interval between actions
+        "timeout": 10000,  # maximal timeout for each test
+    }
+
+
+@pytest.fixture(scope="session")
+def browser_context_args(browser_context_args, playwright):
+    return {
+        **browser_context_args,
+        "base_url": "https://app.testomat.io",
+        "viewport": {"width": 1440, "height": 900},
+        "device_scale_factor": 1,
+        "locale": "uk-UA",
+        "timezone_id": "Europe/Kyiv",
+        "record_video_dir": "videos/",
+        "permissions": ["geolocation"]
+    }
+
+
 def delete_multiple_projects(app: Application, company_name: str, project_name: str):
     (app.projects_page.is_loaded()
      .open_company_projects(company_name))

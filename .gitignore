@@ -2,3 +2,4 @@
 .idea
 .env
 src/data_type_experiments
+test-result
