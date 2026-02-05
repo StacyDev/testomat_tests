@@ -85,8 +85,8 @@ def browser_type_launch_args(browser_type_launch_args: dict) -> dict:
         **browser_type_launch_args,
         "channel": "chrome",
         "headless": False,
-        "slow_mo": 150,  # interval between actions
-        "timeout": 10000,  # maximal timeout for each test
+        "slow_mo": 100,  # interval between actions
+        "timeout": 60000,  # maximal timeout for each test
     }
 
 
@@ -95,7 +95,7 @@ def browser_context_args(browser_context_args, playwright):
     return {
         **browser_context_args,
         "base_url": "https://app.testomat.io",
-        "viewport": {"width": 1440, "height": 900},
+        "viewport": {"width": 1280, "height": 720},
         "device_scale_factor": 1,
         "locale": "uk-UA",
         "timezone_id": "Europe/Kyiv",
