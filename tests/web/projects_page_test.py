@@ -13,8 +13,10 @@ create_project_data = [
 
 @pytest.mark.regression
 @pytest.mark.parametrize("company, project_name, project_type", create_project_data)
-def test_creating_project(app: Application, remove_test_projects, company, project_name,
+def test_creating_project(auth_app: Application, remove_test_projects, company, project_name,
                           project_type):
+    app = auth_app
+
     # arrange
     (app.projects_page
      .is_loaded()
@@ -44,7 +46,8 @@ def test_creating_project(app: Application, remove_test_projects, company, proje
 
 
 @pytest.mark.regression
-def test_deleting_project(app: Application, create_test_project):
+def test_deleting_project(auth_app: Application, create_test_project):
+    app = auth_app
     (app.projects_page
      .is_loaded()
      .open_company_projects(DEFAULT_COMPANY))
@@ -64,13 +67,15 @@ def test_deleting_project(app: Application, create_test_project):
 
 search_project_data = [
     pytest.param(DEFAULT_PROJ_CLASSIC, DEFAULT_PROJ_CLASSIC, id="search_project_by_full_name"),
-    pytest.param("BD",DEFAULT_PROJ_BDD, id="search_project_by_first_two_characters_upper_case")
+    pytest.param("BD", DEFAULT_PROJ_BDD, id="search_project_by_first_two_characters_upper_case")
 ]
 
 
 @pytest.mark.regression
 @pytest.mark.parametrize("search_value, expected_project_name", search_project_data)
-def test_project_search(app: Application, create_multiple_projects, search_value, expected_project_name):
+def test_project_search(auth_app: Application, create_multiple_projects, search_value,
+                        expected_project_name):
+    app = auth_app
     (app.projects_page
      .is_loaded()
      .is_project_list_loaded()
@@ -79,4 +84,3 @@ def test_project_search(app: Application, create_multiple_projects, search_value
     expect(app.projects_page.get_project_list_locator().filter(visible=True)).to_have_count(1)
     expect(app.projects_page.get_project_list_locator().filter(visible=True)).to_have_text(
         expected_project_name)
-

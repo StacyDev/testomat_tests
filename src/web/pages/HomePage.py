@@ -6,6 +6,7 @@ from src.web.pages.LoginPage import LoginPage
 
 
 class HomePage:
+
     def __init__(self, page: Page):
         self.page = page
         self._loc_menu_header = self.page.locator("#headerMenuWrapper")

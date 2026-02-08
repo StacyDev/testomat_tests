@@ -3,7 +3,7 @@ from _pytest.mark import ParameterSet
 from faker import Faker
 
 from src.web.Application import Application
-from tests.conftest import Config, app, configs
+from tests.conftest import Config, configs
 
 fake = Faker()
 
@@ -40,20 +40,16 @@ def fill_out_test_data_placeholders(configs: Config, data_item: str) -> str:
 
 @pytest.mark.regression
 @pytest.mark.parametrize("email, password", invalid_login_data)
-def test_login_invalid(app: Application, configs: Config, email, password):
+def test_login_invalid(app_shared_page: Application, configs: Config, email, password):
     email_value = fill_out_test_data_placeholders(configs, email)
     password_value = fill_out_test_data_placeholders(configs, password)
 
-    (app.home_page
+    (app_shared_page.login_page
      .open()
-     .is_loaded()
-     .open_login_page_by_click())
-
-    (app.login_page
      .is_loaded())
 
-    app.login_page.login(email_value, password_value)
-    app.login_page.is_invalid_message_visible()
+    app_shared_page.login_page.login(email_value, password_value)
+    app_shared_page.login_page.is_invalid_message_visible()
 
 
 valid_login_data = [
@@ -66,16 +62,13 @@ valid_login_data = [
 @pytest.mark.regression
 @pytest.mark.smoke
 @pytest.mark.parametrize("email, password", valid_login_data)
-def test_login_success(app: Application, configs: Config, email, password):
+def test_login_success(app_shared_page: Application, configs: Config, email, password):
+    app = app_shared_page
     email_value = fill_out_test_data_placeholders(configs, email)
     password_value = fill_out_test_data_placeholders(configs, password)
 
-    (app.home_page
-     .open()
-     .is_loaded()
-     .open_login_page_by_click())
-
     (app.login_page
+     .open()
      .is_loaded())
     app.login_page.login(email_value, password_value)
 

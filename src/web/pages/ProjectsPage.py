@@ -65,7 +65,7 @@ class ProjectsPage:
     def has_projects(self) -> bool:
         try:
             locator = self._loc_no_proj_lbl
-            locator.wait_for(state="visible", timeout=2000)
+            locator.wait_for(state="visible", timeout=3000)
             return False
 
         except TimeoutError:

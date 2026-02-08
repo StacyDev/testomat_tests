@@ -8,18 +8,19 @@ from tests import conftest
 
 @pytest.mark.regression
 @pytest.mark.smoke
-def test_new_page_elements(login, app: Application):
+def test_new_page_elements(auth_app: Application):
+    app = auth_app
     (app.create_project_page
      .open()
      .is_loaded())
 
 
 @pytest.mark.regression
-def test_new_project_creation(app: Application, remove_test_projects,
-                              remove_non_default_test_projects: list[
-                                  str]):
+def test_new_project_creation(auth_app: Application, remove_test_projects,
+                              remove_non_default_test_projects: list):
     project_name = Faker().company()
     remove_non_default_test_projects.append(project_name)
+    app = auth_app
 
     (app.projects_page
      .is_loaded()

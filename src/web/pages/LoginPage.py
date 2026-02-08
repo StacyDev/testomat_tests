@@ -3,6 +3,7 @@ from playwright.sync_api import expect
 
 
 class LoginPage:
+
     def __init__(self, page: Page):
         self.page = page
         self._loc_sign_in_block = self.page.locator("#content-desktop form#new_user")
