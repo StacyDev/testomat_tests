@@ -3,8 +3,6 @@ from typing import Self
 
 from playwright.sync_api import Page, expect, Locator
 
-from src.web.pages.SingleProjectPage import SingleProjectPage
-
 
 class CreateProjectPage:
     class DemoData(Enum):

@@ -12,6 +12,7 @@ def handle_dialog(dialog: Dialog):
 
 
 class SingleProjectPage:
+
     def __init__(self, page: Page):
         self.page = page
         self.side_bar = SideBar(page)
@@ -52,4 +53,4 @@ class SingleProjectPage:
         return ProjectsPage(self.page)
 
     def get_project_title_locator(self) -> Locator:
-        return  self._loc_proj_title_lbl
+        return self._loc_proj_title_lbl
