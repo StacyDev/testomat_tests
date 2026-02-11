@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import Self
 
 from playwright.sync_api import Page, expect, Locator
 

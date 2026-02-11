@@ -1,9 +1,8 @@
 import pytest
 from playwright.sync_api import expect
 
-from src.web.Application import Application
-from tests.conftest import DEFAULT_PROJ_CLASSIC, DEFAULT_COMPANY, DEFAULT_PROJ_BDD, \
-    remove_test_projects
+from src.web.application import Application
+from tests.conftest import DEFAULT_COMPANY, DEFAULT_PROJ_BDD, DEFAULT_PROJ_CLASSIC
 
 create_project_data = [
     pytest.param(DEFAULT_COMPANY, DEFAULT_PROJ_CLASSIC, "classic", id="create_classic_project"),

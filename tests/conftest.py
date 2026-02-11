@@ -1,12 +1,12 @@
 import os
 from dataclasses import dataclass
-from typing import Any, Generator
+from typing import Generator
 
 import pytest
 from dotenv import load_dotenv
-from playwright.sync_api import Page, Locator, Browser, StorageState, BrowserContext
+from playwright.sync_api import Browser, BrowserContext, Locator, Page, StorageState
 
-from src.web.Application import Application
+from src.web.application import Application
 
 load_dotenv()
 
@@ -27,10 +27,10 @@ DEFAULT_COMPANY = "Free Projects"
 @pytest.fixture(scope="session")
 def configs():
     return Config(
-        base_app_url=f"{os.getenv("BASE_APP_URL")}/users/sign_in",
+        base_app_url=f"{os.getenv('BASE_APP_URL')}/users/sign_in",
         email=os.getenv("EMAIL"),
         password=os.getenv("PASSWORD"),
-        base_url=os.getenv("BASE_URL")
+        base_url=os.getenv("BASE_URL"),
     )
 
 
@@ -55,14 +55,15 @@ def browser_context_args(browser_context_args: dict) -> dict:
         "locale": "uk-UA",
         "timezone_id": "Europe/Kyiv",
         "record_video_dir": "test-result/videos/",
-        "permissions": ["geolocation"]
+        "permissions": ["geolocation"],
     }
 
 
 # this fixture creates 1 session/context for the whole file (module)
 @pytest.fixture(scope="module")
-def shared_browser_context(browser: Browser, browser_context_args: dict) -> Generator[
-    BrowserContext, None, None]:
+def shared_browser_context(
+    browser: Browser, browser_context_args: dict
+) -> Generator[BrowserContext, None, None]:
     context = browser.new_context(**browser_context_args)
     try:
         yield context
@@ -72,8 +73,9 @@ def shared_browser_context(browser: Browser, browser_context_args: dict) -> Gene
 
 # this fixture allows reusing context (cookies/cache)
 @pytest.fixture(scope="function")
-def app_shared_page(shared_browser_context: BrowserContext, request) -> Generator[Application,
-None, None]:
+def app_shared_page(
+    shared_browser_context: BrowserContext, request
+) -> Generator[Application, None, None]:
     shared_browser_context.tracing.start(screenshots=True, snapshots=True, sources=True)
     page: Page = shared_browser_context.new_page()
 
@@ -88,7 +90,7 @@ None, None]:
     finally:
         try:
             shared_browser_context.tracing.stop()
-        except:
+        except Exception:
             pass
         page.close()
         shared_browser_context.clear_cookies()
@@ -110,14 +112,18 @@ def is_test_failed(request) -> bool:
 def record_trace_if_failed(has_failed: bool, context: BrowserContext, request):
     if has_failed:
         trace_path = f"test-result/custom-fixture-traces/{request.node.name}/trace.zip"
-        context.tracing.stop(path=trace_path)  # when providing path argument tracing is stopped
+        context.tracing.stop(
+            path=trace_path
+        )  # when providing path argument tracing is stopped
         # with saving
     else:
         context.tracing.stop()
 
 
 @pytest.fixture(scope="module")
-def logged_in_storage(shared_browser_context: BrowserContext, configs: Config) -> StorageState:
+def logged_in_storage(
+    shared_browser_context: BrowserContext, configs: Config
+) -> StorageState:
     page: Page = shared_browser_context.new_page()  # temporary page for login
     temp_app = Application(page)
 
@@ -131,13 +137,13 @@ def logged_in_storage(shared_browser_context: BrowserContext, configs: Config) -
 
 
 @pytest.fixture(scope="function")
-def auth_app(browser: Browser, browser_context_args: dict, logged_in_storage: StorageState,
-             request) -> \
-        Generator[Application, None, None]:
-    context_params = {
-        **browser_context_args,
-        "storage_state": logged_in_storage
-    }
+def auth_app(
+    browser: Browser,
+    browser_context_args: dict,
+    logged_in_storage: StorageState,
+    request,
+) -> Generator[Application, None, None]:
+    context_params = {**browser_context_args, "storage_state": logged_in_storage}
 
     context = browser.new_context(**context_params)
 
@@ -158,7 +164,7 @@ def auth_app(browser: Browser, browser_context_args: dict, logged_in_storage: St
     finally:
         try:
             context.tracing.stop()
-        except:
+        except Exception:
             pass
         page.close()
         context.clear_cookies()
@@ -180,8 +186,9 @@ def remove_test_projects(auth_app: Application, configs: Config):
 
 
 @pytest.fixture
-def remove_non_default_test_projects(auth_app: Application, configs: Config) -> Generator[list,
-None, None]:
+def remove_non_default_test_projects(
+    auth_app: Application, configs: Config
+) -> Generator[list, None, None]:
     project_container: list = []
 
     yield project_container
@@ -194,50 +201,57 @@ None, None]:
 @pytest.fixture(scope="function")
 def create_test_project(auth_app: Application, configs: Config, remove_test_projects):
     app = auth_app
-    (app.projects_page.is_loaded()
-     .open_company_projects(DEFAULT_COMPANY)
-     .click_create_project())
+    (
+        app.projects_page.is_loaded()
+        .open_company_projects(DEFAULT_COMPANY)
+        .click_create_project()
+    )
     do_create_project_steps(app, "classic", DEFAULT_PROJ_CLASSIC)
 
 
 @pytest.fixture(scope="function")
-def create_multiple_projects(auth_app: Application, configs: Config, remove_test_projects):
+def create_multiple_projects(
+    auth_app: Application, configs: Config, remove_test_projects
+):
     app = auth_app
-    (app.projects_page.is_loaded()
-     .open_company_projects(DEFAULT_COMPANY)
-     .click_create_project())
+    (
+        app.projects_page.is_loaded()
+        .open_company_projects(DEFAULT_COMPANY)
+        .click_create_project()
+    )
     do_create_project_steps(app, "classic", DEFAULT_PROJ_CLASSIC)
     app.projects_page.click_create_project()
     do_create_project_steps(app, "bdd", DEFAULT_PROJ_BDD)
 
 
-def delete_multiple_projects(auth_app: Application, company_name: str, project_name: str):
+def delete_multiple_projects(
+    auth_app: Application, company_name: str, project_name: str
+):
     app = auth_app
-    (app.projects_page.is_loaded()
-     .open_company_projects(company_name))
-    project_items: list[Locator] = app.projects_page.get_projects_list_by_name(project_name)
+    (app.projects_page.is_loaded().open_company_projects(company_name))
+    project_items: list[Locator] = app.projects_page.get_projects_list_by_name(
+        project_name
+    )
 
     while len(project_items) > 0:
         project_items[0].click()
 
-        (app.single_project_page.is_loaded()
-         .open_project_settings()
-         .trigger_and_confirm_project_delete()
-         .return_to_projects_list())
+        (
+            app.single_project_page.is_loaded()
+            .open_project_settings()
+            .trigger_and_confirm_project_delete()
+            .return_to_projects_list()
+        )
 
-        project_items = (app.projects_page.is_loaded()
-                         .get_projects_list_by_name(project_name))
+        project_items = app.projects_page.is_loaded().get_projects_list_by_name(
+            project_name
+        )
 
 
 def do_login_steps(app: Application, configs: Config):
-    (app.login_page
-     .open()
-     .is_loaded()
-     .login(configs.email, configs.password))
+    (app.login_page.open().is_loaded().login(configs.email, configs.password))
 
 
 def do_create_project_steps(app: Application, proj_type: str, project_name):
-    (app.create_project_page.is_loaded()
-     .create_project(proj_type, project_name))
-    (app.single_project_page.is_loaded()
-     .return_to_projects_list())
+    (app.create_project_page.is_loaded().create_project(proj_type, project_name))
+    (app.single_project_page.is_loaded().return_to_projects_list())

@@ -1,0 +1,15 @@
+# Set the line length
+line-length = 100
+
+# Assume Python 3.11
+target-version = "py311"
+
+[lint]
+# E = pycodestyle, F = Pyflakes, B = flake8-bugbear (covers bare except)
+select = ["E", "F", "B"]
+# Ignore security rules (S101) for now to keep it simple
+ignore = []
+
+[format]
+quote-style = "double"
+indent-style = "space"

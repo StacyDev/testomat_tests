@@ -1,10 +1,10 @@
 from playwright.sync_api import Page
 
-from src.web.pages.CreateProjectPage import CreateProjectPage
-from src.web.pages.HomePage import HomePage
-from src.web.pages.LoginPage import LoginPage
-from src.web.pages.ProjectsPage import ProjectsPage
-from src.web.pages.SingleProjectPage import SingleProjectPage
+from src.web.pages.create_project_page import CreateProjectPage
+from src.web.pages.home_page import HomePage
+from src.web.pages.login_page import LoginPage
+from src.web.pages.projects_page import ProjectsPage
+from src.web.pages.single_project_page import SingleProjectPage
 
 
 class Application:

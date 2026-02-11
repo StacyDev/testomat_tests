@@ -1,9 +1,7 @@
-from typing import Self
-
 from playwright.sync_api import Page, expect, Dialog, Locator
 
-from src.web.components.SideBar import SideBar
-from src.web.pages.ProjectsPage import ProjectsPage
+from src.web.components.side_bar import SideBar
+from src.web.pages.projects_page import ProjectsPage
 
 
 def handle_dialog(dialog: Dialog):
