@@ -1,18 +1,30 @@
-from playwright.sync_api import Page, expect, Locator, TimeoutError
+from playwright.sync_api import Locator, Page, TimeoutError, expect
 
 
 class ProjectsPage:
-
     def __init__(self, page: Page):
         self.page = page
+        self._loc_enterprise_plan_lbl = self.page.get_by_text("Enterprise Plan")
+        self._loc_plan_tippy_ttip = self.page.locator("[data-tippy-root]")
+        self._loc_free_plan_lbl = self.page.get_by_text("Free Plan")
         self._loc_proj_lst = self.page.locator("ul li h3")
         self._loc_comp_select = self.page.locator("#content-desktop select#company_id")
         self._loc_no_proj_lbl = self.page.get_by_text("You have not created any projects yet")
         self._loc_proj_lst_grid = self.page.locator(".tab-content#grid")
-        self._loc_login_ok_msg = self.page.locator(".common-flash-success-right",
-                                                   has_text="Signed in successfully")
+        self._loc_login_ok_msg = self.page.locator(
+            ".common-flash-success-right", has_text="Signed in successfully"
+        )
         self._loc_create_proj_btn = self.page.locator(".common-btn-primary", has_not_text="project")
         self._loc_search_inp = self.page.locator("#content-desktop input#search")
+
+    def get_enterprise_plan_label_locator(self) -> Locator:
+        return self._loc_enterprise_plan_lbl
+
+    def get_free_plan_label_locator(self) -> Locator:
+        return self._loc_free_plan_lbl
+
+    def get_tooltip_locator(self) -> Locator:
+        return self._loc_plan_tippy_ttip
 
     def is_loaded(self) -> ProjectsPage:
         expect(self._loc_comp_select).to_be_visible()

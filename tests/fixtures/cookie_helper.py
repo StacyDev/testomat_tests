@@ -1,7 +1,7 @@
 from typing import Literal
 
 from playwright._impl._api_structures import SetCookieParam
-from playwright.sync_api import BrowserContext, Cookie
+from playwright.sync_api import BrowserContext, Cookie, Page
 
 
 class CookieHelper:
@@ -61,3 +61,9 @@ class CookieHelper:
 
     def clear_all(self) -> None:
         self.context.clear_cookies()
+
+
+def clear_browser_state(page: Page) -> None:
+    page.context.clear_cookies()
+    page.evaluate("window.localStorage.clear()")
+    page.evaluate("window.sessionStorage.clear()")
