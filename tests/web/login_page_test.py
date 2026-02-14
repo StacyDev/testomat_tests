@@ -2,7 +2,7 @@ import pytest
 from faker import Faker
 
 from src.web.application import Application
-from tests.conftest import Config
+from tests.fixtures.config import Config
 
 fake = Faker()
 
@@ -21,12 +21,8 @@ invalid_login_data = [
         id="extreme_long_login",
     ),
     pytest.param("placeholder_email", fake.password(1000), id="extreme_long_password"),
-    pytest.param(
-        "admin' OR '1'='1", "placeholder_password", id="sql_injection_attempt_email"
-    ),
-    pytest.param(
-        "placeholder_email", "admin' OR '1'='1", id="sql_injection_attempt_password"
-    ),
+    pytest.param("admin' OR '1'='1", "placeholder_password", id="sql_injection_attempt_email"),
+    pytest.param("placeholder_email", "admin' OR '1'='1", id="sql_injection_attempt_password"),
     pytest.param(
         "<script>alert(1)</script>@test.com",
         "placeholder_password",
@@ -47,14 +43,14 @@ def fill_out_test_data_placeholders(configs: Config, data_item: str) -> str:
 
 @pytest.mark.regression
 @pytest.mark.parametrize("email, password", invalid_login_data)
-def test_login_invalid(app_shared_page: Application, configs: Config, email, password):
+def test_login_invalid(app: Application, configs: Config, email, password):
     email_value = fill_out_test_data_placeholders(configs, email)
     password_value = fill_out_test_data_placeholders(configs, password)
 
-    (app_shared_page.login_page.open().is_loaded())
+    (app.login_page.open().is_loaded())
 
-    app_shared_page.login_page.login(email_value, password_value)
-    app_shared_page.login_page.is_invalid_message_visible()
+    app.login_page.login(email_value, password_value)
+    app.login_page.is_invalid_message_visible()
 
 
 valid_login_data = [
@@ -71,8 +67,8 @@ valid_login_data = [
 @pytest.mark.regression
 @pytest.mark.smoke
 @pytest.mark.parametrize("email, password", valid_login_data)
-def test_login_success(app_shared_page: Application, configs: Config, email, password):
-    app = app_shared_page
+def test_login_success(app: Application, configs: Config, email, password):
+    app = app
     email_value = fill_out_test_data_placeholders(configs, email)
     password_value = fill_out_test_data_placeholders(configs, password)
 

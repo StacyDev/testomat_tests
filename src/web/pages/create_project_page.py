@@ -1,6 +1,6 @@
 from enum import Enum
 
-from playwright.sync_api import Page, expect, Locator
+from playwright.sync_api import Locator, Page, expect
 
 
 class CreateProjectPage:
@@ -31,7 +31,7 @@ class CreateProjectPage:
 
         self._loc_btn_create_demo = self._loc_demo_form.get_by_role("button", name="Create Demo")
 
-    def is_loaded(self) -> CreateProjectPage:
+    def is_loaded(self) -> CreateProjectPage:  # noqa: F821
         expect(self._loc_form_container).to_be_visible()
         expect(self._loc_bdd_rbtn).to_contain_text("BDD")
         expect(self._loc_classic_rbtn).to_contain_text("Classical")
@@ -46,7 +46,7 @@ class CreateProjectPage:
         expect(self._loc_demo_form).to_be_hidden()
         return self
 
-    def check_demo_data(self) -> CreateProjectPage:
+    def check_demo_data(self) -> CreateProjectPage:  # noqa: F821
         expect(self._loc_demo_data_cbox).not_to_be_checked(timeout=10000)
         self._loc_demo_data_cbox.click()
         expect(self._loc_demo_form).to_be_visible()
@@ -55,7 +55,7 @@ class CreateProjectPage:
             expect(self._loc_demo_form.get_by_role("button", name=option.value)).to_be_visible()
         return self
 
-    def uncheck_demo_data(self) -> CreateProjectPage:
+    def uncheck_demo_data(self) -> CreateProjectPage:  # noqa: F821
         expect(self._loc_demo_data_cbox).to_be_unchecked(timeout=10000)
         self._loc_demo_data_cbox.click()
         expect(self._loc_demo_form).to_be_hidden()
@@ -64,18 +64,18 @@ class CreateProjectPage:
             expect(self._loc_demo_form.get_by_role("button", name=option.value)).to_be_hidden()
         return self
 
-    def set_project_type(self, project_type: str) -> CreateProjectPage:
+    def set_project_type(self, project_type: str) -> CreateProjectPage:  # noqa: F821
         if project_type == "classic":
             self._loc_classic_rbtn.click()
         elif project_type == "bdd":
             self._loc_bdd_rbtn.click()
         return self
 
-    def open(self) -> CreateProjectPage:
+    def open(self) -> CreateProjectPage:  # noqa: F821
         self.page.goto("/projects/new")
         return self
 
-    def fill_project_name(self, project_name: str) -> CreateProjectPage:
+    def fill_project_name(self, project_name: str) -> CreateProjectPage:  # noqa: F821
         self._loc_proj_name_inp.fill(project_name)
         return self
 
@@ -88,14 +88,16 @@ class CreateProjectPage:
         self.fill_project_name(project_name)
         self.click_submit_btn()
 
-    def create_project_with_demo_data(self, project_type: str, project_name: str,
-                                      demo_data: DemoData):
+    def create_project_with_demo_data(
+        self, project_type: str, project_name: str, demo_data: DemoData
+    ):
         self.set_project_type(project_type)
         self.fill_project_name(project_name)
         self.check_demo_data()
         self.pick_demo_data(demo_data)
         self.click_submit_btn()
 
+    # noqa: F821
     def pick_demo_data(self, demo_option: DemoData) -> CreateProjectPage:
         self._loc_demo_form.get_by_role("button", name=demo_option.value).click()
         return self

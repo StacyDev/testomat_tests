@@ -2,7 +2,11 @@ import pytest
 from playwright.sync_api import expect
 
 from src.web.application import Application
-from tests.conftest import DEFAULT_COMPANY, DEFAULT_PROJ_BDD, DEFAULT_PROJ_CLASSIC
+from tests.fixtures.infrastructure_handler import (
+    DEFAULT_COMPANY,
+    DEFAULT_PROJ_BDD,
+    DEFAULT_PROJ_CLASSIC,
+)
 
 create_project_data = [
     pytest.param(DEFAULT_COMPANY, DEFAULT_PROJ_CLASSIC, "classic", id="create_classic_project"),
@@ -12,9 +16,9 @@ create_project_data = [
 
 @pytest.mark.regression
 @pytest.mark.parametrize("company, project_name, project_type", create_project_data)
-def test_creating_project(auth_app: Application, remove_test_projects, company, project_name,
+def test_creating_project(logged_app: Application, remove_test_projects, company, project_name,
                           project_type):
-    app = auth_app
+    app = logged_app
 
     # arrange
     (app.projects_page
@@ -45,8 +49,8 @@ def test_creating_project(auth_app: Application, remove_test_projects, company, 
 
 
 @pytest.mark.regression
-def test_deleting_project(auth_app: Application, create_test_project):
-    app = auth_app
+def test_deleting_project(logged_app: Application, create_test_project):
+    app = logged_app
     (app.projects_page
      .is_loaded()
      .open_company_projects(DEFAULT_COMPANY))
@@ -72,9 +76,9 @@ search_project_data = [
 
 @pytest.mark.regression
 @pytest.mark.parametrize("search_value, expected_project_name", search_project_data)
-def test_project_search(auth_app: Application, create_multiple_projects, search_value,
+def test_project_search(logged_app: Application, create_multiple_projects, search_value,
                         expected_project_name):
-    app = auth_app
+    app = logged_app
     (app.projects_page
      .is_loaded()
      .is_project_list_loaded()
