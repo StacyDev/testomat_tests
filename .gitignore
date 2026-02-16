@@ -5,3 +5,4 @@ src/data_type_experiments
 test-result
 videos
 .pytest_cache
+api-1.json

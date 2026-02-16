@@ -8,9 +8,8 @@ from tests.fixtures.infrastructure_handler import DEFAULT_COMPANY
 
 @pytest.mark.regression
 @pytest.mark.smoke
-def test_new_page_elements(auth_app: Application):
-    app = auth_app
-    (app.create_project_page.open().is_loaded())
+def test_new_page_elements(logged_app: Application):
+    (logged_app.create_project_page.open().is_loaded())
 
 
 @pytest.mark.regression
@@ -33,7 +32,7 @@ def test_new_project_creation(
 
     (app.single_project_page.is_loaded())
 
-    expect(app.single_project_page.get_project_title_locator()).to_be_visible()
+    expect(app.single_project_page.get_empty_project_title_locator()).to_be_visible()
 
     app.single_project_page.return_to_projects_list()
 

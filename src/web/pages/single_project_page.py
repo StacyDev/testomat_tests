@@ -13,7 +13,7 @@ class SingleProjectPage:
     def __init__(self, page: Page):
         self.page = page
         self.side_bar = SideBar(page)
-        self._loc_proj_title_lbl = self.page.locator(".sticky-header h2")
+        self._loc_empty_proj_title_lbl = self.page.locator(".sticky-header h2")
         self._loc_proj_settings_menu = self.page.locator(".md-icon-cog")
         self._loc_admin_btn = self.page.locator(".red-btn")
         self._loc_delete_proj_btn = self.page.locator(".red-btn")
@@ -21,12 +21,16 @@ class SingleProjectPage:
         self._loc_logo_img = self.page.locator(".logo-full")
         self._loc_new_test_suite_inp = self.page.locator("input[placeholder='First Suite']")
         self._loc_new_test_suite_btn = self.page.get_by_role("button", name="Suite")
+        self._loc_non_empty_project_title_lbl = self.page.locator(".breadcrumbs-page>.ember-view")
+
+    def open_by_id(self, project_id: int) -> SingleProjectPage:  # noqa: F821
+        self.page.goto(f"/projects/{project_id}")
+        return self
 
     def is_loaded(self) -> SingleProjectPage:  # noqa: F821
         # self.page.pause()
         self.side_bar.is_loaded()
-        expect(self._loc_proj_title_lbl).to_be_visible()
-        expect(self._loc_new_test_suite_inp).to_be_visible()
+        expect(self._loc_expand_menu_btn).to_be_visible()
         return self
 
     def open_project_settings(self) -> SingleProjectPage:  # noqa: F821
@@ -45,5 +49,8 @@ class SingleProjectPage:
         (self.side_bar.expand_menu().click_testomat_logo())
         return ProjectsPage(self.page)
 
+    def get_empty_project_title_locator(self) -> Locator:
+        return self._loc_empty_proj_title_lbl
+
     def get_project_title_locator(self) -> Locator:
-        return self._loc_proj_title_lbl
+        return self._loc_non_empty_project_title_lbl
