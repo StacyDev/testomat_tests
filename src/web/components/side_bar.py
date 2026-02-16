@@ -4,12 +4,10 @@ from playwright.sync_api import Page, expect
 
 
 class SideBar:
-
     def __init__(self, page: Page):
         self.page = page
 
         self._loc_side_menu = page.locator(".mainnav-menu")
-
         self._loc_collapsed_menu = page.locator(".mainnav-menu-not-expanded")
         self._loc_logo = self._loc_side_menu.locator(".logo-full")
         self._loc_expand_opt = self._loc_side_menu.locator("button.btn-open")
@@ -114,11 +112,20 @@ class SideBar:
     def is_expanded(self) -> SideBar:
 
         nav_items = [
-            self._loc_logo, self._loc_tests_menu, self._loc_requirements_menu, self._loc_runs_menu,
-            self._loc_plans_menu, self._loc_steps_menu, self._loc_pulse_menu,
-            self._loc_imports_menu, self._loc_analytics_menu, self._loc_branches_menu,
-            self._loc_settings_menu, self._loc_footer_help, self._loc_footer_projects,
-            self._loc_footer_user_menu
+            self._loc_logo,
+            self._loc_tests_menu,
+            self._loc_requirements_menu,
+            self._loc_runs_menu,
+            self._loc_plans_menu,
+            self._loc_steps_menu,
+            self._loc_pulse_menu,
+            self._loc_imports_menu,
+            self._loc_analytics_menu,
+            self._loc_branches_menu,
+            self._loc_settings_menu,
+            self._loc_footer_help,
+            self._loc_footer_projects,
+            self._loc_footer_user_menu,
         ]
 
         for item in nav_items:
