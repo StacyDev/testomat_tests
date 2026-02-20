@@ -7,10 +7,10 @@ class ProjectsPage:
         self._loc_enterprise_plan_lbl = self.page.get_by_text("Enterprise Plan")
         self._loc_plan_tippy_ttip = self.page.locator("[data-tippy-root]")
         self._loc_free_plan_lbl = self.page.get_by_text("Free Plan")
-        self._loc_proj_lst = self.page.locator("ul li h3")
+        self._loc_proj_wrapper = self.page.locator("ul li h3")
         self._loc_comp_select = self.page.locator("#content-desktop select#company_id")
         self._loc_no_proj_lbl = self.page.get_by_text("You have not created any projects yet")
-        self._loc_proj_lst_grid = self.page.locator(".tab-content#grid")
+        self._loc_proj_wrapper_grid = self.page.locator(".tab-content#grid")
         self._loc_login_ok_msg = self.page.locator(
             ".common-flash-success-right", has_text="Signed in successfully"
         )
@@ -32,7 +32,7 @@ class ProjectsPage:
 
     def is_project_list_loaded(self) -> ProjectsPage:
         if self.has_projects():
-            expect(self._loc_proj_lst_grid).to_be_visible()
+            expect(self._loc_proj_wrapper_grid).to_be_visible()
         return self
 
     def is_signin_success_msg_visible(self) -> ProjectsPage:
@@ -51,7 +51,7 @@ class ProjectsPage:
         self._loc_create_proj_btn.click()
 
     def enter_project(self, project_name: str) -> ProjectsPage:
-        item = self._loc_proj_lst.filter(has_text=project_name).first
+        item = self._loc_proj_wrapper.filter(has_text=project_name).first
         item.click()
         return self
 
@@ -66,10 +66,10 @@ class ProjectsPage:
         return self
 
     def get_projects_list_by_name(self, project_name) -> list[Locator]:
-        return self._loc_proj_lst.filter(has_text=project_name).all()
+        return self._loc_proj_wrapper.filter(has_text=project_name).all()
 
     def get_all_projects_list(self) -> list[Locator]:
-        return self._loc_proj_lst.all()
+        return self._loc_proj_wrapper.all()
 
     def has_projects(self) -> bool:
         try:
@@ -81,4 +81,4 @@ class ProjectsPage:
             return True
 
     def get_project_list_locator(self) -> Locator:
-        return self._loc_proj_lst
+        return self._loc_proj_wrapper

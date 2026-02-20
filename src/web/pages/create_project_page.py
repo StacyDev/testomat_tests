@@ -17,12 +17,12 @@ class CreateProjectPage:
     def __init__(self, page: Page):
         self.page = page
 
-        self._loc_form_container = self.page.locator("#content-desktop .new_project")
-        self._loc_bdd_rbtn = self._loc_form_container.locator("#bdd")
-        self._loc_classic_rbtn = self._loc_form_container.locator("#classical")
+        self._loc_form_wrapper = self.page.locator("#content-desktop .new_project")
+        self._loc_bdd_rbtn = self._loc_form_wrapper.locator("#bdd")
+        self._loc_classic_rbtn = self._loc_form_wrapper.locator("#classical")
         self._loc_title_lbl = self.page.locator("#content-desktop h2")
-        self._loc_proj_name_inp = self._loc_form_container.locator("input#project_title")
-        self._loc_create_btn = self._loc_form_container.locator("input[type='submit']")
+        self._loc_proj_name_inp = self._loc_form_wrapper.locator("input#project_title")
+        self._loc_create_btn = self._loc_form_wrapper.locator("input[type='submit']")
         self._loc_how_to_btn = self.page.get_by_text("How to start?")
         self._loc_demo_data_cbox = self.page.locator("#content-desktop #demo-btn")
         self._loc_demo_data_lbl = self.page.locator("#content-desktop label[for='demo-btn']")
@@ -32,7 +32,7 @@ class CreateProjectPage:
         self._loc_btn_create_demo = self._loc_demo_form.get_by_role("button", name="Create Demo")
 
     def is_loaded(self) -> CreateProjectPage:  # noqa: F821
-        expect(self._loc_form_container).to_be_visible()
+        expect(self._loc_form_wrapper).to_be_visible()
         expect(self._loc_bdd_rbtn).to_contain_text("BDD")
         expect(self._loc_classic_rbtn).to_contain_text("Classical")
         expect(self._loc_create_btn).to_be_visible()

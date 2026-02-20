@@ -29,4 +29,5 @@ pytest_plugins = [
     "tests.fixtures.infrastructure_handler",
     "tests.fixtures.playwright",
     "tests.fixtures.api",
+    "tests.fixtures.selenium",
 ]

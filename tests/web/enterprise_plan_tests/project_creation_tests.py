@@ -1,4 +1,3 @@
-import pytest
 from playwright.sync_api import expect
 
 from src.api.testomat_api_client import TestomatApiClient
