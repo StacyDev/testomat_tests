@@ -65,3 +65,6 @@ class Wait:
 
     def until(self, condition):
         return self._wait.until(condition)
+
+    def find_now(self, locator) -> list[WebElement]:
+        return self.driver.find_elements(*locator)
