@@ -12,10 +12,19 @@ dependencies = [
     "pytest-playwright==0.7.1",
     "python-dotenv==1.2.1",
     "ruff>=0.15.0",
-    "requests==2.32.5"
+    "requests==2.32.5",
+    "pydantic>=2.12.5",
 ]
 
 [dependency-groups]
 dev = [
     "ruff>=0.15.0",
+    "datamodel-code-generator>=00.53.0",
 ]
+
+[tool.datamodel-codegen]
+input = "./api_testomat.yaml"
+output = "./src/api/models/models.py"
+target-python-version = "3.14"
+snake-case-field = true
+field-constraints = true

@@ -1,0 +1,176 @@
+openapi: 3.0.3
+info:
+  title: Generated API
+  version: 1.0.0
+servers:
+  - url: https://api.example.com
+paths:
+  /endpoint:
+    post:
+      operationId: post_endpoint
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointPostResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndpointPostResponse'
+components:
+  schemas:
+    EndpointPostResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 5232f4f5
+        type:
+          type: string
+          example: test
+        attributes:
+          type: object
+          properties:
+            title:
+              type: string
+              example: rand
+            state:
+              type: string
+              example: manual
+            emoji:
+              type: string
+              nullable: true
+              example: null
+            recordings-count:
+              type: string
+              nullable: true
+              example: null
+            code:
+              type: string
+              nullable: true
+              example: null
+            file:
+              type: string
+              nullable: true
+              example: null
+            priority:
+              type: string
+              example: normal
+            sync:
+              type: boolean
+              example: true
+            last-sync-id:
+              type: string
+              nullable: true
+              example: null
+            run-statuses:
+              type: array
+              items:
+                type: object
+            assigned-to:
+              type: string
+              nullable: true
+              example: null
+            description:
+              type: string
+              example: rand
+            suite-id:
+              type: string
+              nullable: true
+              example: null
+            has-examples:
+              type: string
+              nullable: true
+              example: null
+            params:
+              type: array
+              items:
+                type: object
+            public-title:
+              type: string
+              example: rand
+            tags:
+              type: array
+              items:
+                type: object
+            previous-description:
+              type: string
+              nullable: true
+              example: null
+            import-id:
+              type: string
+              nullable: true
+              example: null
+            play-url:
+              type: string
+              nullable: true
+              example: null
+            jira-issues:
+              type: string
+              nullable: true
+              example: null
+            attachments:
+              type: string
+              nullable: true
+              example: null
+          required:
+            - title
+            - state
+            - emoji
+            - recordings-count
+            - code
+            - file
+            - priority
+            - sync
+            - last-sync-id
+            - run-statuses
+            - assigned-to
+            - description
+            - suite-id
+            - has-examples
+            - params
+            - public-title
+            - tags
+            - previous-description
+            - import-id
+            - play-url
+            - jira-issues
+            - attachments
+        relationships:
+          type: object
+      required:
+        - id
+        - type
+        - attributes
+        - relationships
+      example:
+        id: 5232f4f5
+        type: test
+        attributes:
+          title: rand
+          state: manual
+          emoji: null
+          recordings-count: null
+          code: null
+          file: null
+          priority: normal
+          sync: true
+          last-sync-id: null
+          run-statuses: [ ]
+          assigned-to: null
+          description: rand
+          suite-id: null
+          has-examples: null
+          params: [ ]
+          public-title: rand
+          tags: [ ]
+          previous-description: null
+          import-id: null
+          play-url: null
+          jira-issues: null
+          attachments: null
+        relationships: { }

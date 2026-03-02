@@ -5,8 +5,8 @@ from src.api.testomat_api_client import TestomatApiClient
 from src.web.application import Application
 
 
-def test_opening_project(api_client: TestomatApiClient, logged_app: Application) -> None:
-    all_projects = api_client.get_projects()
+def test_opening_project(project_context: TestomatApiClient, logged_app: Application) -> None:
+    all_projects = project_context.get_projects()
     target_project_id = all_projects[1].id
     target_project_title = all_projects[1].title
 
