@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 from typing import Generator
 
@@ -28,9 +29,11 @@ def get_or_create_context(
         "device_scale_factor": 1,
         "locale": "uk-UA",
         "timezone_id": "Europe/Kyiv",
-        "record_video_dir": str(TEST_RESULT_DIR / "videos/"),
         "permissions": ["geolocation"],
     }
+    if os.getenv("CI", "false").lower() != "true":
+        kwargs["record_video_dir"] = str(TEST_RESULT_DIR / "videos/")
+
     if has_state:
         kwargs["storage_state"] = str(storage_path)
 

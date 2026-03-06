@@ -30,7 +30,7 @@ class SuiteAttributesRelaxed(RequestMixin):
 class SuiteBodyPropsRelaxed(RequestMixin):
     id: Any | None = None
     type: Any | None = None
-    attributes: Any | None = None
+    attributes: SuiteAttributesRelaxed | Any | None = None
     relationships: Any | None = None
 
 

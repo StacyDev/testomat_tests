@@ -13,13 +13,16 @@ from tests.fixtures.config import Config
 fake = Faker()
 
 
-def test_creating_testcase(suite_context: ApiContextHolder, configs: Config) -> None:
-    # arrange
+def arrange_data_for_create_case(suite_context: ApiContextHolder) -> TestBodyPropsRelaxed:
     attributes_value = TestAttributesRelaxed()
     attributes_value.suite_id = suite_context.suite_id
     attributes_value.title = f"{fake.sentence()} Stacy"
-    data_prop = TestBodyPropsRelaxed(type="test", attributes=attributes_value.build())
+    return TestBodyPropsRelaxed(type="test", attributes=attributes_value.build())
 
+
+def test_creating_testcase(suite_context: ApiContextHolder, configs: Config) -> None:
+    # arrange
+    data_prop = arrange_data_for_create_case(suite_context)
     controller = TestController(base_url=configs.base_url_app, api_token=configs.token)
 
     # act + assert (validating response against model)
@@ -31,8 +34,8 @@ def test_creating_testcase(suite_context: ApiContextHolder, configs: Config) -> 
         f"Expected 201 but got {response.status_code}: {response.text}"
     )
     assert model is not None, "Expected model data but got None"
-    assert model.attributes.title == attributes_value.title, (
-        f"Expected title {attributes_value.title} but got {model.attributes.title}"
+    assert model.attributes.title == data_prop.attributes.title, (
+        f"Expected title {data_prop.attributes.title} but got {model.attributes.title}"
     )
 
     # passing cleanup data
@@ -40,12 +43,18 @@ def test_creating_testcase(suite_context: ApiContextHolder, configs: Config) -> 
         suite_context.test_id = model.id
 
 
-def test_creating_testcase_suite_id_none(suite_context: ApiContextHolder, configs: Config) -> None:
+def arrange_data_for_suite_id_none_case() -> TestBodyPropsRelaxed:
     # arrange
     attributes_value = TestAttributesRelaxed()
     attributes_value.suite_id = None
     attributes_value.title = f"{fake.sentence()} Stacy"
-    data_prop = TestBodyPropsRelaxed(type="test", attributes=attributes_value.build())
+    return TestBodyPropsRelaxed(type="test", attributes=attributes_value.build())
+
+
+def test_creating_testcase_suite_id_none(suite_context: ApiContextHolder, configs: Config) -> None:
+    # arrange
+
+    data_prop = arrange_data_for_suite_id_none_case()
 
     controller = TestController(base_url=configs.base_url_app, api_token=configs.token)
 
