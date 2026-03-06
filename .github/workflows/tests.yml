@@ -65,7 +65,7 @@ jobs:
           EMAIL: ${{secrets.EMAIL}}
           PASSWORD: ${{secrets.PASSWORD}}
           TESTOMAT_TOKEN: ${{secrets.TESTOMAT_TOKEN}}
-        run: uv pytest -m smoke --ignore=tests/web/selenium
+        run: uv run pytest -m smoke --ignore=tests/web/selenium
 
       - name: Upload HTML report
         if: always()
@@ -109,7 +109,7 @@ jobs:
           EMAIL: ${{secrets.EMAIL}}
           PASSWORD: ${{secrets.PASSWORD}}
           TESTOMAT_TOKEN: ${{secrets.TESTOMAT_TOKEN}}
-        run: uv pytest -m regression
+        run: uv run pytest -m regression
 
       - name: Upload HTML report
         if: always()

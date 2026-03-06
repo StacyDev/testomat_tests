@@ -20,6 +20,8 @@ def get_data_for_create_suite_case() -> SuiteBodyPropsRelaxed:
     return SuiteBodyPropsRelaxed(type="suite", attributes=attributes_value.build())
 
 
+@pytest.mark.regression
+@pytest.mark.api
 def test_creating_suite(project_context: ApiContextHolder, configs: Config) -> None:
     # arrange: preparing test data
     data_prop = get_data_for_create_suite_case()
@@ -48,6 +50,8 @@ def get_data_for_create_suite_no_title_case() -> SuiteBodyPropsRelaxed:
     return SuiteBodyPropsRelaxed(type="suite", attributes=attributes_value.build())
 
 
+@pytest.mark.regression
+@pytest.mark.api
 def test_creating_suite_no_title(project_context: ApiContextHolder, configs: Config) -> None:
     # arrange: preparing test data
     data_prop = get_data_for_create_suite_no_title_case()

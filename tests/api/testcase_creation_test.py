@@ -20,6 +20,8 @@ def arrange_data_for_create_case(suite_context: ApiContextHolder) -> TestBodyPro
     return TestBodyPropsRelaxed(type="test", attributes=attributes_value.build())
 
 
+@pytest.mark.regression
+@pytest.mark.api
 def test_creating_testcase(suite_context: ApiContextHolder, configs: Config) -> None:
     # arrange
     data_prop = arrange_data_for_create_case(suite_context)
@@ -51,6 +53,8 @@ def arrange_data_for_suite_id_none_case() -> TestBodyPropsRelaxed:
     return TestBodyPropsRelaxed(type="test", attributes=attributes_value.build())
 
 
+@pytest.mark.regression
+@pytest.mark.api
 def test_creating_testcase_suite_id_none(suite_context: ApiContextHolder, configs: Config) -> None:
     # arrange
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from playwright.sync_api import Dialog, Locator, Page, expect
 
 from src.web.components.side_bar import SideBar

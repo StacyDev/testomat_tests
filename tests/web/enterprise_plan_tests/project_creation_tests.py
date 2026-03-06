@@ -5,6 +5,7 @@ from src.api.testomat_api_client import TestomatApiClient
 from src.web.application import Application
 
 
+@pytest.mark.regression
 def test_opening_project(project_context: TestomatApiClient, logged_app: Application) -> None:
     all_projects = project_context.get_projects()
     target_project_id = all_projects[1].id

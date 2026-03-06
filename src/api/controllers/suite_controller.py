@@ -1,5 +1,3 @@
-from typing import Any
-
 import requests
 
 from src.api.controllers.base_controller import BaseController
@@ -48,7 +46,7 @@ class SuiteController(BaseController):
 
         return preprocess_response(response)
 
-    def get(self, suite_id: str, project_id: str) -> tuple[requests.Response, SuiteBodyPropsStrict]:
+    def get(self, project_id: str) -> tuple[requests.Response, SuiteBodyPropsStrict]:
         response = self._get(f"/api/{project_id}/suites")
 
         return preprocess_response(response)

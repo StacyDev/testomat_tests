@@ -1,5 +1,6 @@
-from playwright.sync_api import Page
-from playwright.sync_api import expect
+from __future__ import annotations
+
+from playwright.sync_api import Page, expect
 
 
 class LoginPage:

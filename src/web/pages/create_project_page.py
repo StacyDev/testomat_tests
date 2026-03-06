@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 from enum import Enum
 
-from playwright.sync_api import Locator, Page, expect
+from playwright.sync_api import Page, expect
 
 
 class CreateProjectPage:
