@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     inputs:
       test_suite:
-        description: 'Test suite to run'
+        description: 'Test suite to execute'
         required: true
         default: 'smoke'
         type: choice
