@@ -25,7 +25,7 @@ jobs:
     if: github.event_name == 'push' || github.event_name =='pull_request'
     steps:
       - name: Setup environment
-        uses: ./.github/actions/setup/action.yml
+        uses: ./.github/actions/setup
         with:
           install-playwright: 'true'
 
@@ -45,7 +45,7 @@ jobs:
       (inputs.test_suite == 'smoke' || inputs.test_suite == 'all'))
     steps:
       - name: Setup environment
-        uses: ./.github/actions/setup/action.yml
+        uses: ./.github/actions/setup
         with:
           install-playwright: 'true'
 
@@ -86,7 +86,7 @@ jobs:
       inputs.test_suite == 'regression'))
     steps:
       - name: Setup environment
-        uses: ./.github/actions/setup/action.yml
+        uses: ./.github/actions/setup
         with:
           install-playwright: 'true'
 
