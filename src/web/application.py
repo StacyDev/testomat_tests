@@ -8,7 +8,6 @@ from src.web.pages.single_project_page import SingleProjectPage
 
 
 class Application:
-
     def __init__(self, page: Page):
         self.page = page
         self.home_page = HomePage(self.page)
