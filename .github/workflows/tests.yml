@@ -53,7 +53,7 @@ jobs:
           BASE_APP_URL: ${{secrets.BASE_APP_URL}}
           EMAIL: ${{secrets.EMAIL}}
           PASSWORD: ${{secrets.PASSWORD}}
-          TESTOMAT_TOKEN: ${{secrets.TESTOMAT_TOKEN}
+          TESTOMAT_TOKEN: ${{secrets.TESTOMAT_TOKEN}}
         run: uv pytest -m smoke --ignore=tests/web/selenium
 
       - name: Upload HTML report
@@ -93,7 +93,7 @@ jobs:
           BASE_APP_URL: ${{secrets.BASE_APP_URL}}
           EMAIL: ${{secrets.EMAIL}}
           PASSWORD: ${{secrets.PASSWORD}}
-          TESTOMAT_TOKEN: ${{secrets.TESTOMAT_TOKEN}
+          TESTOMAT_TOKEN: ${{secrets.TESTOMAT_TOKEN}}
         run: uv pytest -m regression
 
       - name: Upload HTML report
