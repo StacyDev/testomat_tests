@@ -1,6 +1,8 @@
 name: E2E Tests
 
 on:
+  push:
+    branches: [ 'MF-*' ]
   pull_request:
     branches: [ main ]
   schedule:
@@ -20,7 +22,7 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    if: github.event_name =='pull-request'
+    if: github.event_name =='pull_request'
     steps:
       - name: Setup environment
         uses: ./.github/actions/setup/actions.yml
