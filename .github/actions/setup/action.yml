@@ -19,9 +19,11 @@ runs:
         enable-cache: true
 
     - name: Install Python 3.14
+      shell: bash
       run: uv python install 3.14
 
     - name: Install dependencies
+      shell: bash
       run: uv sync --frozen
 
     - name: Install Playwright Chromium
