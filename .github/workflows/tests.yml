@@ -1,5 +1,11 @@
 name: E2E Tests
 
+# Necessary for GitHub Pages deployment and OIDC handshake
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 on:
   push:
     branches: [ 'MF-*' ]
@@ -152,10 +158,10 @@ jobs:
       - name: Prepare Pages content
         run: |
           mkdir -p pages
-          if [-f report/smoke/report.html]; then
+          if [ -f report/smoke/report.html ]; then
           cp report/smoke/report.html pages/index.html
           fi
-          if [-f report/regression/report.html]; then
+          if [ -f report/regression/report.html ]; then
           cp report/regression/report.html pages/regression.html
           fi
 
