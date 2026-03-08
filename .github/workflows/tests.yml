@@ -63,6 +63,9 @@ jobs:
         with:
           install-playwright: 'true'
 
+      - name: Create results directory
+        run: mkdir -p test-result/traces
+
       - name: Run smoke tests
         env:
           CI: true
@@ -106,6 +109,9 @@ jobs:
         uses: ./.github/actions/setup
         with:
           install-playwright: 'true'
+
+      - name: Create results directory
+        run: mkdir -p test-result/traces
 
       - name: Run smoke tests
         env:
