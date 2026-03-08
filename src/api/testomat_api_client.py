@@ -47,7 +47,7 @@ class ProjectStore:
         return len(self.projects)
 
 
-class TestomatApiClient:
+class ApiClient:
     def __init__(self, base_url, token):
         self._base_url = base_url
         self._session = requests.Session()
@@ -55,14 +55,14 @@ class TestomatApiClient:
         self._jwt_token: str | None = None
         self._all_projects: ProjectStore | None = None
 
-    def _request_auth_token(self) -> TestomatApiClient:  # noqa: F821
+    def _request_auth_token(self) -> ApiClient:  # noqa: F821
         if self._jwt_token is None:
             payload = {"api_token": self._token}
             r = requests.post(self._base_url + "/api/login", data=payload)
             self._jwt_token = r.json()["jwt"]
         return self
 
-    def _request_projects(self) -> TestomatApiClient:  # noqa: F821
+    def _request_projects(self) -> ApiClient:  # noqa: F821
         if self._jwt_token is None:
             self._request_auth_token()
 

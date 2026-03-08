@@ -17,6 +17,8 @@ def preprocess_response(response) -> tuple[requests.Response, TestBodyPropsStric
 
 
 class TestController(BaseController):
+    __test__ = False  # This tells pytest "I am not a test suite"
+
     def create(
         self, data_value: TestBodyPropsRelaxed | None, project_id: str
     ) -> tuple[requests.Response, TestBodyPropsStrict | None]:

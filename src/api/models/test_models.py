@@ -6,6 +6,7 @@ from src.api.models.common_models import RequestMixin
 
 
 class TestAttributesStrict(BaseModel):
+    __test__ = False  # This tells pytest "I am not a test suite"
     title: str | None = Field(...)
     state: str | None = Field(...)
     emoji: str | None = Field(...)
@@ -36,6 +37,7 @@ class TestAttributesStrict(BaseModel):
 
 
 class TestBodyPropsStrict(BaseModel):
+    __test__ = False  # This tells pytest "I am not a test suite"
     id: str = Field(...)
     type: str = Field(...)
     attributes: TestAttributesStrict
@@ -44,6 +46,7 @@ class TestBodyPropsStrict(BaseModel):
 
 
 class TestAttributesRelaxed(RequestMixin):
+    __test__ = False  # This tells pytest "I am not a test suite"
     # 'Any | None' accepts any data type OR a missing field
     title: Any | None = Field(default=None)
     state: Any | None = Field(default=None)
@@ -70,6 +73,7 @@ class TestAttributesRelaxed(RequestMixin):
 
 
 class TestBodyPropsRelaxed(RequestMixin):
+    __test__ = False  # This tells pytest "I am not a test suite"
     id: Any | None = Field(default=None)
     type: Any | None = Field(default=None)
     attributes: TestAttributesRelaxed | None = Field(default_factory=TestAttributesRelaxed)

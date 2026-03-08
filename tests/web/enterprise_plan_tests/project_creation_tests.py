@@ -1,12 +1,12 @@
 import pytest
 from playwright.sync_api import expect
 
-from src.api.testomat_api_client import TestomatApiClient
+from src.api.testomat_api_client import ApiClient
 from src.web.application import Application
 
 
 @pytest.mark.regression
-def test_opening_project(project_context: TestomatApiClient, logged_app: Application) -> None:
+def test_opening_project(project_context: ApiClient, logged_app: Application) -> None:
     all_projects = project_context.get_projects()
     target_project_id = all_projects[1].id
     target_project_title = all_projects[1].title

@@ -6,7 +6,7 @@ from faker.proxy import Faker
 from src.api.controllers.suite_controller import SuiteController
 from src.api.controllers.test_controller import TestController
 from src.api.models.suite_models import SuiteAttributesRelaxed, SuiteBodyPropsRelaxed
-from src.api.testomat_api_client import TestomatApiClient
+from src.api.testomat_api_client import ApiClient
 from tests.fixtures.config import Config
 
 fake = Faker()
@@ -21,7 +21,7 @@ class ApiContextHolder:
 
 @pytest.fixture(scope="session")
 def project_context(configs) -> Generator[ApiContextHolder, None, None]:
-    client = TestomatApiClient(configs.base_url_app, configs.token)
+    client = ApiClient(configs.base_url_app, configs.token)
     infra = ApiContextHolder()
     all_projects = client.get_projects()
     infra.project_id = all_projects[1].id
