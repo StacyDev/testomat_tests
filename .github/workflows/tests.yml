@@ -70,7 +70,7 @@ jobs:
           BASE_APP_URL: ${{secrets.BASE_APP_URL}}
           EMAIL: ${{secrets.EMAIL}}
           PASSWORD: ${{secrets.PASSWORD}}
-          TESTOMAT_TOKEN: ${{secrets.TESTOMAT_TOKEN}}
+          TOKEN: ${{secrets.TOKEN}}
         run: uv run pytest -c pytest.ini -m smoke --tracing retain-on-failure --output=test-result/traces
 
       - name: Upload HTML report
@@ -114,7 +114,7 @@ jobs:
           BASE_APP_URL: ${{secrets.BASE_APP_URL}}
           EMAIL: ${{secrets.EMAIL}}
           PASSWORD: ${{secrets.PASSWORD}}
-          TESTOMAT_TOKEN: ${{secrets.TESTOMAT_TOKEN}}
+          TOKEN: ${{secrets.TOKEN}}
         run: uv run pytest -c pytest.ini -m regression --tracing retain-on-failure --output=test-result/traces
 
       - name: Upload HTML report
