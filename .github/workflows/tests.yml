@@ -63,9 +63,6 @@ jobs:
         with:
           install-playwright: 'true'
 
-      - name: Create results directory
-        run: mkdir -p test-result/traces
-
       - name: Run smoke tests
         env:
           CI: true
@@ -74,7 +71,7 @@ jobs:
           EMAIL: ${{secrets.EMAIL}}
           PASSWORD: ${{secrets.PASSWORD}}
           TESTOMAT_TOKEN: ${{secrets.TESTOMAT_TOKEN}}
-        run: uv run pytest -m smoke --ignore=tests/web/selenium
+        run: uv run pytest -c pytest.ini -m smoke --tracing retain-on-failure --output=test-result/traces
 
       - name: Upload HTML report
         if: always()
@@ -89,7 +86,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: smoke-traces
-          path: test-result/traces/
+          path: test-result/traces/**
           retention-days: 14
 
   regression-tests:
@@ -109,9 +106,6 @@ jobs:
         uses: ./.github/actions/setup
         with:
           install-playwright: 'true'
-
-      - name: Create results directory
-        run: mkdir -p test-result/traces
 
       - name: Run smoke tests
         env:
@@ -136,7 +130,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: regression-traces
-          path: test-result/traces/
+          path: test-result/traces/**
           retention-days: 14
 
   publish-report:
