@@ -107,7 +107,7 @@ jobs:
         with:
           install-playwright: 'true'
 
-      - name: Run smoke tests
+      - name: Run regression tests
         env:
           CI: true
           BASE_URL: ${{secrets.BASE_URL}}
@@ -115,7 +115,7 @@ jobs:
           EMAIL: ${{secrets.EMAIL}}
           PASSWORD: ${{secrets.PASSWORD}}
           TESTOMAT_TOKEN: ${{secrets.TESTOMAT_TOKEN}}
-        run: uv run pytest -c pytest.ini -m купкуіішщт --tracing retain-on-failure --output=test-result/traces
+        run: uv run pytest -c pytest.ini -m regression --tracing retain-on-failure --output=test-result/traces
 
       - name: Upload HTML report
         if: always()
