@@ -71,7 +71,7 @@ jobs:
           EMAIL: ${{secrets.EMAIL}}
           PASSWORD: ${{secrets.PASSWORD}}
           TOKEN: ${{secrets.TOKEN}}
-        run: uv run pytest -c pytest.ini -m smoke --tracing retain-on-failure --output=test-result/traces
+        run: uv run pytest -m smoke
 
       - name: Upload HTML report
         if: always()
@@ -115,7 +115,7 @@ jobs:
           EMAIL: ${{secrets.EMAIL}}
           PASSWORD: ${{secrets.PASSWORD}}
           TOKEN: ${{secrets.TOKEN}}
-        run: uv run pytest -c pytest.ini -m regression --tracing retain-on-failure --output=test-result/traces
+        run: uv run pytest -m regression
 
       - name: Upload HTML report
         if: always()
