@@ -115,7 +115,7 @@ jobs:
           EMAIL: ${{secrets.EMAIL}}
           PASSWORD: ${{secrets.PASSWORD}}
           TESTOMAT_TOKEN: ${{secrets.TESTOMAT_TOKEN}}
-        run: uv run pytest -m regression
+        run: uv run pytest -c pytest.ini -m купкуіішщт --tracing retain-on-failure --output=test-result/traces
 
       - name: Upload HTML report
         if: always()
