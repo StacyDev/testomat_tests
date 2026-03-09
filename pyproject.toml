@@ -14,13 +14,51 @@ dependencies = [
     "ruff>=0.15.0",
     "requests==2.32.5",
     "pydantic>=2.12.5",
+    "allure-pytest>=2.15.3",
 ]
 
 [dependency-groups]
 dev = [
     "ruff>=0.15.0",
-    "datamodel-code-generator>=00.53.0",
+    "datamodel-code-generator>=0.53.0",
 ]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py", "*_tests.py"]
+python_functions = ["test_*"]
+norecursedirs = [".git", ".venv", ".claude", "__pycache__", "build", "dist", "*.egg-info"]
+
+# Merged from ini addopts
+addopts = [
+    "-v",
+    "-ra",
+    "--strict-markers",
+    "--tb=short",
+    "--tracing=retain-on-failure",
+    "--screenshot=on",
+    "--output=test-result/traces/",
+    "--html=test-result/report.html",
+    "--self-contained-html",
+    "--alluredir=./test-result/allure-results",
+]
+
+# Merged from ini markers
+markers = [
+    "smoke: Quick smoke tests for basic functionality",
+    "regression: Full regression test suite",
+    "web: Web UI tests using Playwright",
+    "slow: Tests that take longer to execute",
+    "api: REST api tests",
+]
+
+console_output_style = "progress"
+log_cli = true
+log_cli_level = "INFO"
+log_cli_format = "%(asctime)s [%(levelname)s] %(message)s"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+xfail_strict = true
 
 [tool.datamodel-codegen]
 input = "./api_testomat.yaml"
