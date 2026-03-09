@@ -73,14 +73,6 @@ jobs:
           TOKEN: ${{secrets.TOKEN}}
         run: uv run pytest -m smoke
 
-      - name: Upload HTML report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: smoke-html-report
-          path: test-result/report.html
-          retention-days: 14
-
       - name: Upload traces
         if: failure()
         uses: actions/upload-artifact@v4
@@ -124,14 +116,6 @@ jobs:
           PASSWORD: ${{secrets.PASSWORD}}
           TOKEN: ${{secrets.TOKEN}}
         run: uv run pytest -m regression
-
-      - name: Upload HTML report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: regression-html-report
-          path: test-result/report.html
-          retention-days: 14
 
       - name: Upload traces
         if: failure()
