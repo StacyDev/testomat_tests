@@ -1,3 +1,4 @@
+import allure
 import requests
 
 from src.api.controllers.base_controller import BaseController
@@ -20,6 +21,7 @@ def preprocess_response(response) -> tuple[requests.Response, SuiteBodyPropsStri
 
 
 class SuiteController(BaseController):
+    @allure.step
     def create(
         self, data_value: SuiteBodyPropsRelaxed | None, project_id: str
     ) -> tuple[requests.Response, SuiteBodyPropsStrict]:
@@ -30,6 +32,7 @@ class SuiteController(BaseController):
 
         return preprocess_response(response)
 
+    @allure.step
     def update(
         self, suite_id: str, data_value: SuiteBodyPropsRelaxed | None, project_id: str
     ) -> tuple[requests.Response, SuiteBodyPropsStrict]:
@@ -39,6 +42,7 @@ class SuiteController(BaseController):
 
         return preprocess_response(response)
 
+    @allure.step
     def get_single(
         self, suite_id: str, project_id: str
     ) -> tuple[requests.Response, SuiteBodyPropsStrict]:
@@ -46,10 +50,12 @@ class SuiteController(BaseController):
 
         return preprocess_response(response)
 
+    @allure.step
     def get(self, project_id: str) -> tuple[requests.Response, SuiteBodyPropsStrict]:
         response = self._get(f"/api/{project_id}/suites")
 
         return preprocess_response(response)
 
+    @allure.step
     def delete(self, suite_id: str, project_id: str) -> requests.Response:
         return self._delete(f"/api/{project_id}/suites/{suite_id}")

@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+import allure
 from playwright.sync_api import Dialog, Locator, Page, expect
 
 from src.web.components.side_bar import SideBar
 from src.web.pages.projects_page import ProjectsPage
 
 
+@allure.step
 def handle_dialog(dialog: Dialog):
     print(f"Dialog message: {dialog.message}")
     dialog.accept()
@@ -25,21 +27,25 @@ class SingleProjectPage:
         self._loc_new_test_suite_btn = self.page.get_by_role("button", name="Suite")
         self._loc_non_empty_project_title_lbl = self.page.locator(".breadcrumbs-page>.ember-view")
 
+    @allure.step
     def open_by_id(self, project_id: int) -> SingleProjectPage:  # noqa: F821
         self.page.goto(f"/projects/{project_id}")
         return self
 
+    @allure.step
     def is_loaded(self) -> SingleProjectPage:  # noqa: F821
         # self.page.pause()
         self.side_bar.is_loaded()
         expect(self._loc_expand_menu_btn).to_be_visible()
         return self
 
+    @allure.step
     def open_project_settings(self) -> SingleProjectPage:  # noqa: F821
         self.page.once("dialog", handle_dialog)
         (self.side_bar.expand_menu().click_settings())
         return self
 
+    @allure.step
     def trigger_and_confirm_project_delete(self) -> SingleProjectPage:  # noqa: F821
         self.page.once("dialog", handle_dialog)
         self._loc_admin_btn.click()
@@ -47,12 +53,15 @@ class SingleProjectPage:
         self._loc_delete_proj_btn.click()
         return self
 
+    @allure.step
     def return_to_projects_list(self) -> ProjectsPage:
         (self.side_bar.expand_menu().click_testomat_logo())
         return ProjectsPage(self.page)
 
+    @allure.step
     def get_empty_project_title_locator(self) -> Locator:
         return self._loc_empty_proj_title_lbl
 
+    @allure.step
     def get_project_title_locator(self) -> Locator:
         return self._loc_non_empty_project_title_lbl

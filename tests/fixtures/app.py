@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 from typing import Generator
 
+import allure
 import pytest
 from playwright.sync_api import Browser, BrowserContext, Page, ViewportSize, expect
 
@@ -87,8 +88,9 @@ def app(
     page: Page = context.new_page()
     start_tracing(context)
     yield Application(page)
+
+    stop_tracing_preserving_failed_case_tracing(page, request)
     page.close()
-    stop_tracing_preserving_failed_case_tracing(context, request)
     context.close()
 
 
@@ -120,7 +122,7 @@ def logged_app(
     logged_page.goto("/projects")
     yield Application(logged_page)
 
-    stop_tracing_preserving_failed_case_tracing(logged_page.context, request)
+    stop_tracing_preserving_failed_case_tracing(logged_page, request)
 
 
 @pytest.fixture(scope="function")
@@ -172,21 +174,31 @@ def free_project_app(
     start_tracing(free_project_page.context)
     free_project_page.goto("/projects")
     yield Application(free_project_page)
+
+    stop_tracing_preserving_failed_case_tracing(free_project_page, request)
     free_project_page.close()
-    stop_tracing_preserving_failed_case_tracing(free_project_page.context, request)
 
 
 def start_tracing(context: BrowserContext) -> None:
     context.tracing.start(screenshots=True, snapshots=True, sources=True)
 
 
-def stop_tracing_preserving_failed_case_tracing(
-    context: BrowserContext, request: pytest.FixtureRequest
-) -> None:
+def stop_tracing_preserving_failed_case_tracing(page: Page, request: pytest.FixtureRequest) -> None:
     failed = hasattr(request.node, "rep_call") and request.node.rep_call.failed
     if failed:
+        allure.attach(
+            page.screenshot(), name="screenshot", attachment_type=allure.attachment_type.PNG
+        )
         trace_path = TRACES_DIR / f"{request.node.name}.zip"
         trace_path.parent.mkdir(parents=True, exist_ok=True)
-        context.tracing.stop(path=str(trace_path))
+        page.context.tracing.stop(path=str(trace_path))
+
+        allure.attach.attach(
+            str(trace_path),
+            name="trace",
+            extension="zip",
+            attachment_type="application/vnd.allure.playwright-trace",
+        )
+
     else:
-        context.tracing.stop()
+        page.context.tracing.stop()

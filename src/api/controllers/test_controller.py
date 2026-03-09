@@ -1,3 +1,4 @@
+import allure
 import requests
 
 from src.api.controllers.base_controller import BaseController
@@ -19,6 +20,7 @@ def preprocess_response(response) -> tuple[requests.Response, TestBodyPropsStric
 class TestController(BaseController):
     __test__ = False  # This tells pytest "I am not a test suite"
 
+    @allure.step
     def create(
         self, data_value: TestBodyPropsRelaxed | None, project_id: str
     ) -> tuple[requests.Response, TestBodyPropsStrict | None]:
@@ -35,6 +37,7 @@ class TestController(BaseController):
             "Content-Type": "application/json",
         }
 
+    @allure.step
     def update(
         self, test_id: str, data_value: TestBodyPropsRelaxed | None, project_id: str
     ) -> tuple[requests.Response, TestBodyPropsStrict | None]:
@@ -43,6 +46,7 @@ class TestController(BaseController):
         response = self._put(f"/api/{project_id}/tests/{test_id}", body)
         return preprocess_response(response)
 
+    @allure.step
     def get_single(
         self, test_id: str, project_id: str
     ) -> tuple[requests.Response, TestBodyPropsStrict | None]:
@@ -50,10 +54,12 @@ class TestController(BaseController):
 
         return preprocess_response(response)
 
+    @allure.step
     def get(self, project_id: str) -> tuple[requests.Response, TestBodyPropsStrict | None]:
         response = self._get(f"/api/{project_id}/tests")
 
         return preprocess_response(response)
 
+    @allure.step
     def delete(self, test_id: str, project_id: str) -> requests.Response:
         return self._delete(f"/api/{project_id}/tests/{test_id}")
