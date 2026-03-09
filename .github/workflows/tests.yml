@@ -1,6 +1,5 @@
 name: E2E Tests
 
-# Necessary for GitHub Pages deployment and OIDC handshake
 permissions:
   contents: read
   pages: write
@@ -29,20 +28,15 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' || github.event_name =='pull_request'
-
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Setup environment
         uses: ./.github/actions/setup
         with:
           install-playwright: 'true'
-
       - name: Run Ruff linter
         run: uv run ruff check .
-
       - name: Run Ruff formatter check
         run: uv run ruff format --check .
 
@@ -52,17 +46,14 @@ jobs:
       github.event_name =='pull_request' ||
       github.event_name =='schedule'||
       github.event_name == 'push' ||
-      (github.event_name =='workflow_dispatch' &&
-      (inputs.test_suite == 'smoke' || inputs.test_suite == 'all'))
+      (github.event_name =='workflow_dispatch' && (inputs.test_suite == 'smoke' || inputs.test_suite == 'all'))
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Setup environment
         uses: ./.github/actions/setup
         with:
           install-playwright: 'true'
-
       - name: Run smoke tests
         env:
           CI: true
@@ -72,7 +63,6 @@ jobs:
           PASSWORD: ${{secrets.PASSWORD}}
           TOKEN: ${{secrets.TOKEN}}
         run: uv run pytest -m smoke
-
       - name: Upload traces
         if: failure()
         uses: actions/upload-artifact@v4
@@ -80,7 +70,6 @@ jobs:
           name: smoke-traces
           path: test-result/traces/**
           retention-days: 14
-
       - name: Upload Allure reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -96,20 +85,17 @@ jobs:
       always() && (
       github.event_name =='pull_request' ||
       github.event_name == 'push' ||
-      (github.event_name == 'schedule' && needs.smoke-tests.result == 'success')||
-      (github.event_name == 'workflow_dispatch' && inputs.test_suite == 'all' && needs.smoke-tests.result == 'success')||
+      (github.event_name == 'schedule' && needs.smoke-tests.result == 'success') ||
+      (github.event_name == 'workflow_dispatch' && inputs.test_suite == 'all' && needs.smoke-tests.result == 'success') ||
       (github.event_name == 'workflow_dispatch' && inputs.test_suite == 'regression')
-      inputs.test_suite == 'regression'))
-
+      )
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Setup environment
         uses: ./.github/actions/setup
         with:
           install-playwright: 'true'
-
       - name: Run regression tests
         env:
           CI: true
@@ -119,7 +105,6 @@ jobs:
           PASSWORD: ${{secrets.PASSWORD}}
           TOKEN: ${{secrets.TOKEN}}
         run: uv run pytest -m regression
-
       - name: Upload traces
         if: failure()
         uses: actions/upload-artifact@v4
@@ -127,7 +112,6 @@ jobs:
           name: regression-traces
           path: test-result/traces/**
           retention-days: 14
-
       - name: Upload Allure reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -139,20 +123,20 @@ jobs:
   publish-report:
     runs-on: ubuntu-latest
     needs: [ smoke-tests, regression-tests ]
-    if: always() && (needs.smoke-tests.result != 'skipped' || needs.regression-tests.result)
+    if: always() && (needs.smoke-tests.result != 'skipped' || needs.regression-tests.result != 'skipped')
     environment:
       name: github-pages
-      url: ${{steps.deployment.outputs.page_url}}
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Download smoke Allure report
-        if: needs.smoke-tests.result !='skipped'
+        if: needs.smoke-tests.result != 'skipped'
         uses: actions/download-artifact@v4
         with:
           name: smoke-allure-results
           path: allure-results/smoke
 
       - name: Download regression Allure report
-        if: needs.regression-tests.result !='skipped'
+        if: needs.regression-tests.result != 'skipped'
         uses: actions/download-artifact@v4
         with:
           name: regression-allure-results
@@ -165,22 +149,15 @@ jobs:
 
       - name: Generate Allure reports
         run: |
-          if [ -d allure-results/smoke ]; then
-            allure generate allure-results/smoke -o pages/allure/smoke --clean
-          fi
-          if [ -d allure-results/regression ]; then
-            allure generate allure-results/regression -o pages/allure/regression --clean
-          fi
-
-      - name: Prepare Pages content
-        run: |
-          mkdir -p pages
-          if [ -f report/smoke/report.html ]; then
-          cp report/smoke/report.html pages/index.html
-          fi
-          if [ -f report/regression/report.html ]; then
-          cp report/regression/report.html pages/regression.html
-          fi
+          mkdir -p pages/allure
+          [ -d allure-results/smoke ] && allure generate allure-results/smoke -o pages/allure/smoke --clean
+          [ -d allure-results/regression ] && allure generate allure-results/regression -o pages/allure/regression --clean
+          
+          # Create a landing page index
+          echo "<html><body><h1>Test Reports</h1><ul>" > pages/index.html
+          [ -d pages/allure/smoke ] && echo "<li><a href='allure/smoke/index.html'>Smoke Report</a></li>" >> pages/index.html
+          [ -d pages/allure/regression ] && echo "<li><a href='allure/regression/index.html'>Regression Report</a></li>" >> pages/index.html
+          echo "</ul></body></html>" >> pages/index.html
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
@@ -193,4 +170,3 @@ jobs:
       - name: Deploy to Github Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
